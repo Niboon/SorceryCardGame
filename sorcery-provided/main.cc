@@ -1,9 +1,5 @@
 #include <iostream>
-#include <string>
-#include <sstream>
-#include <fstream>
 #include <vector>
-#include "ascii_graphics.h"
 #include "interpret.h"
 
 using namespace std;
@@ -51,28 +47,30 @@ int main(int argc, char *argv[]) {
         cerr << e.what();
         exit(1);
     }
+
     string player1Name = "Player 1";
     string player2Name = "Player 2";
-    for (auto it=init.begin(); it!=init.end(); ++it) {
+    for (auto it=init.begin(); it!=init.begin()+2; ++it) {
         auto i = distance(init.begin(), it);
         if (i==0) {
             player1Name = *it;
-            cout << player1Name << endl;
         } else if (i==1) {
             player2Name = *it;
-            cout << player2Name << endl;
-        } else {
-            processLineOfCmd(*it);
         }
     }
-    // Controller game{deck1, deck2, player1Name, player2Name};
+
+    Controller game{deck1, deck2, player1Name, player2Name};
+
+    for (auto it=init.begin()+2; it!=init.end(); ++it) {
+        processLineOfCmd(*it, game);
+    }
 
     cin >> std::ws; // Flush buffer of whitespace
     string line;
     try {
         while (true) {
             getline(cin, line);
-            if (!processLineOfCmd(line)) break;
+            if (!processLineOfCmd(line, game)) break;
         }
     }
     catch (ios::failure &e) {

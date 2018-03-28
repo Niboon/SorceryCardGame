@@ -7,47 +7,51 @@
 
 using namespace std;
 
-bool processLineOfCmd(const string &line) {// processes commands by single lines
+bool processLineOfCmd(const string &line, Controller game) {// processes commands by single lines
     stringstream ss(line);
     string cmd;
     ss >> std::ws;
     ss >> cmd;
     if (cmd == "play") {
         int card, targetPlayer, targetCard;
-        bool hasTargets = handleActionWith2Targets(ss, cmd, card, targetPlayer, targetCard);
-        cout << endl;
+        bool hasTargets = handleActionWith2Targets(ss, card, targetPlayer, targetCard);
+        if (hasTargets)
+            game.play(card, targetPlayer, targetCard);
+        else
+            game.play(card);
     }
     else if (cmd == "attack") {
         int attacker, defender;
         bool hasTargets = handleActionWith1Target(ss, cmd, attacker, defender);
-        cout << endl;
+        if (hasTargets)
+            game.attack(attacker, defender);
+        else
+            game.attack(attacker);
     }
     else if (cmd == "use") {
         int card, targetPlayer, targetCard;
-        bool hasTargets = handleActionWith2Targets(ss, cmd, card, targetPlayer, targetCard);
-        cout << endl;
+        bool hasTargets = handleActionWith2Targets(ss, card, targetPlayer, targetCard);
+        if (hasTargets)
+            game.use(card, targetPlayer, targetCard);
+        else
+            game.use(card);
     }
     else if (cmd == "inspect") {
         int minion;
         if (ss >> minion) {
-            // game.drawInspect(minion);
-            cout << cmd << minion << endl;
+             game.drawInspect(minion);
         }
     }
     else if (cmd == "hand") {
-        // game.drawHand();
-        cout << cmd << endl;
+         game.drawHand();
     }
     else if (cmd == "board") {
-        // game.drawBoard();
-        cout << cmd << endl;
+         game.drawBoard();
     }
     else if (cmd == "end") {
-        // game.nextTurn();
-        cout << cmd << endl;
+         game.nextTurn();
     }
     else if (cmd == "quit") {
-        cout << cmd << endl;
         return false;
     } else {
         // unknown command
@@ -62,31 +66,27 @@ bool handleActionWith1Target(stringstream &ss, const string &cmd, int &card, int
     if (ss >> card) {
         ss >> std::ws;
         if (ss.eof()) {
-            cout << cmd << card;
         } else {
             if (ss >> targetCard) {
-                cout << cmd << card << targetCard;
                 hasTarget = true;
             } else {
-                cerr << cmd << " Ignored: Invalid target" << endl;
+                cerr << " Ignored: Invalid target" << endl;
             }
         }
     }
     return hasTarget;
 }
 
-bool handleActionWith2Targets(stringstream &ss, const string &cmd, int &card, int &targetPlayer, int &targetCard) {
+bool handleActionWith2Targets(std::stringstream &ss, int &card, int &targetPlayer, int &targetCard) {
     bool hasTargets = false;
     ss >> std::skipws;
     if (ss >> card) {
         if (ss.eof()) {
-            cout << cmd << card;
         } else {
             if (ss >> targetPlayer && ss >> targetCard) {
-                cout << cmd << card << targetPlayer << targetCard;
                 hasTargets = true;
             } else {
-                cerr << cmd << " Ignored: Invalid targets" << endl;
+                cerr << "Ignored: Invalid targets" << endl;
             }
         }
     }
