@@ -1,13 +1,13 @@
-#ifndef STATSENCHANTMENT_H
-#define STATSENCHANTMENT_H
+#ifndef STATSENCHANTEMENT_H
+#define STATSENCHANTEMENT_H
 
 #include <vector>
 #include "enchantment.h"
-
+#include "statsEnchantmentCard.h"
 
 class StatsEnchantment : public Enchantment {
 public:
-  StatsEnchantment(std::shared_ptr<Minion> minion, int atk, int def);
+  StatsEnchantment(std::shared_ptr<Minion> minion, std::unique_ptr<EnchantmentCard> enchantmentCard);
 
   card_template_t getDraw() const override;
 
@@ -22,6 +22,7 @@ public:
 private:
   int atk;
   int def;
+  std::unique_ptr<EnchantmentCard> enchantmentCard;
 };
 
-#endif //STATSENCHANTMENT_H
+#endif //STATSENCHANTEMENT_H
