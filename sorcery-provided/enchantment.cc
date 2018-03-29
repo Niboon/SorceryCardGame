@@ -3,27 +3,27 @@
 Enchantment::Enchantment(std::shared_ptr<Minion> minion) : minion{std::move(minion)} {}
 
 card_template_t Enchantment::getDraw() {
-    return minion->getDraw();
+  return minion->getDraw();
 }
 
 int Enchantment::getAtk() const {
-    return minion->getAtk();
+  return minion->getAtk();
 }
 
 int Enchantment::getDef() const {
-    return minion->getDef();
+  return minion->getDef();
 }
 
 int Enchantment::getAbility() const {
-    return minion->getAbility();
+  return minion->getAbility();
 }
 
 std::string Enchantment::getName() const {
-    return minion->getName();
+  return minion->getName();
 }
 
 int Enchantment::getCost() const {
-    return minion->getCost();
+  return minion->getCost();
 }
 
 Enchantment::~Enchantment() = default;

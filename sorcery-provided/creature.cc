@@ -7,34 +7,33 @@ Creature::Creature(const std::string &name, int cost, int atk, int def, int abil
         cost{cost},
         atk{atk},
         def{def},
-        ability{ability}
-{}
+        ability{ability} {}
 
 std::string Creature::getName() const {
-    return name;
+  return name;
 }
 
 int Creature::getCost() const {
-    return cost;
+  return cost;
 }
 
 int Creature::getAtk() const {
-    return atk;
+  return atk;
 }
 
 int Creature::getDef() const {
-    return def;
+  return def;
 }
 
 int Creature::getAbility() const {
-    return ability;
+  return ability;
 }
 
 card_template_t Creature::getDraw() {
-    return display_enchantment_attack_defence(
-            getName(),
-            getCost(),
-            "",
-            to_string(getAtk()),
-            to_string(getDef()));
+  return display_enchantment_attack_defence(
+          getName(),
+          getCost(),
+          "",
+          to_string(getAtk()),
+          to_string(getDef()));
 }

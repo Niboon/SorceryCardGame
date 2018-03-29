@@ -6,28 +6,28 @@
 
 class Creature : public Minion {
 public:
-    Creature(const std::string &name, int cost, int atk, int def, int ability);
+  Creature(const std::string &name, int cost, int atk, int def, int ability);
 
-    std::string getName() const override;
+  std::string getName() const override;
 
-    int getCost() const override;
+  int getCost() const override;
 
-    int getAtk() const override;
+  int getAtk() const override;
 
-    int getDef() const override;
+  int getDef() const override;
 
-    int getAbility() const override;
+  int getAbility() const override;
 
-    card_template_t getDraw() override;
+  card_template_t getDraw() override;
 
-    ~Creature() override = default;
+  ~Creature() override = default;
 
 private:
-    std::string name;
-    int cost;
-    int atk;
-    int def;
-    int ability;
+  std::string name;
+  int cost;
+  int atk;
+  int def;
+  int ability;
 };
 
 
