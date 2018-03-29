@@ -9,7 +9,7 @@ class StatsEnchantment : public Enchantment {
 public:
   StatsEnchantment(std::shared_ptr<Minion> minion, int atk, int def);
 
-  card_template_t getDraw() override;
+  card_template_t getDraw() const override;
 
   int getAtk() const override;
 

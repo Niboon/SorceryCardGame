@@ -29,7 +29,7 @@ int Creature::getAbility() const {
   return ability;
 }
 
-card_template_t Creature::getDraw() {
+card_template_t Creature::getDraw() const {
   return display_enchantment_attack_defence(
           getName(),
           getCost(),

@@ -11,7 +11,7 @@ public:
 
   virtual int getCost() const = 0;
 
-  virtual std::vector<std::string> getDraw() = 0;
+  virtual std::vector<std::string> getDraw() const = 0;
 
   virtual ~Card() = default;
 };

@@ -18,7 +18,7 @@ public:
 
   int getAbility() const override;
 
-  card_template_t getDraw() override;
+  card_template_t getDraw() const override;
 
   ~Creature() override = default;
 

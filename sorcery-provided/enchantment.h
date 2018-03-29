@@ -10,7 +10,7 @@ class Enchantment : public Minion {
 public:
   explicit Enchantment(std::shared_ptr<Minion> minion);
 
-  virtual card_template_t getDraw();
+  virtual card_template_t getDraw() const;
 
   virtual std::string getName() const;
 

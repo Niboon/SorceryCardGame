@@ -8,7 +8,7 @@ using namespace std;
 StatsEnchantment::StatsEnchantment(std::shared_ptr<Minion> minion, int atk, int def) :
         Enchantment{std::move(minion)}, atk{atk}, def{def} {}
 
-card_template_t StatsEnchantment::getDraw() {
+card_template_t StatsEnchantment::getDraw() const {
   return display_enchantment_attack_defence(
           Enchantment::getName(),
           Enchantment::getCost(),

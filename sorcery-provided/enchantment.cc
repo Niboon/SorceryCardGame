@@ -2,7 +2,7 @@
 
 Enchantment::Enchantment(std::shared_ptr<Minion> minion) : minion{std::move(minion)} {}
 
-card_template_t Enchantment::getDraw() {
+card_template_t Enchantment::getDraw() const {
   return minion->getDraw();
 }
 
