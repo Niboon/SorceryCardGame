@@ -1,24 +1,25 @@
 #ifndef HAND_H
 #define HAND_H
 
-#include <utility>
-
-class Card;
+#include <string>
+#include <vector>
+#include <memory>
+#include "card.h"
 
 class Hand {
-  std::vector<std::unique_ptr<Card>> hand;
+  std::vector<std::unique_ptr<Card>> cards;
 public:
-  Card takeCard(int which);
-
-  void addCard(Card newCard);
-
-  string getDraw();
-
   Hand();
+
+  std::unique_ptr<Card> takeCard(int which);
+
+  void addCard(std::unique_ptr<Card> newCard);
+
+  std::string getDraw();
 
   Hand(Hand &other);
 
   ~Hand();
-}
+};
 
 #endif
