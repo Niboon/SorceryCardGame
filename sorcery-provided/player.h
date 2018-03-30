@@ -2,34 +2,35 @@
 #define PLAYER_H
 
 #include <string>
-#include <utility>
-
-class Card;
+#include <memory>
+#include "card.h"
 
 class Deck;
 
 class Hand;
 
 class Player {
-  string name;
+private:
+  std::string name;
   int magic;
   int life;
   std::unique_ptr<Deck> deck;
   std::unique_ptr<Hand> hand;
 public:
+  Player(const std::string &name, int magic, int life,
+         std::vector<std::string> cardNames);
+
+  Player(Player &other);
+
   void drawCard();
 
   Card getCard(int num);
 
-  string showHand();
+  card_template_t showHand();
 
-  string getDraw();
-
-  Player(string &name, int magic, int life, std::vector<Card> deck);
-
-  Player(Player &other);
+  card_template_t getDraw();
 
   ~Player();
-}
+};
 
 #endif
