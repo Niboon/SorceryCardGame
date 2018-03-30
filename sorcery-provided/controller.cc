@@ -28,12 +28,15 @@ void Controller::use(int card, int playerTarget, int cardTarget) {
 }
 
 void Controller::attack(int minion) {
-  cout << "attack " << minion;
+  board->injure(opponent(), 0, board->minion(whoseTurn(), minion)->getAtk());
 
 }
 
 void Controller::attack(int minion, int otherMinion) {
-  cout << "attack " << minion << " " << otherMinion << endl;
+  int minionAtk = board->minion(whoseTurn(), minion)->getAtk();
+  int otherMinionAtk = board->minion(opponent(), otherMionion)->getAtk();
+  board->injure(opponent(), otherMinion, minionAtk);
+  board->injure(whoseTurn(), minion, otherMinionAtk);
 
 }
 

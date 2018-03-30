@@ -18,21 +18,20 @@ class Enchantment : public Card;
 class TriggerObserver;
 
 class Board : public Subject {
-  std::unique_ptr<Player> p1;
-  std::unique_ptr<Player> p2;
+  std::unique_ptr<Player> p1, p2;
   int activePlayer;
-  std::unique_ptr<std::vector<Card>> graveyard1;
-  std::unique_ptr<std::vector<Card>> graveyard2;
-  std::unique_ptr<Ritual> ritual1;
-  std::unique_ptr<Ritual> ritual2;
-  std::unique_ptr<std::vector<Minion>> minions1;
-  std::unique_ptr<std::vector<Minion>> minions2;
-  std::vector<TriggerObserver *> observersPlayer1;
-  std::vector<TriggerObserver *> observersPlayer2;
+  std::unique_ptr<std::vector<Card>> graveyard1, graveyard2;
+  std::unique_ptr<Ritual> ritual1, rirtual2;
+  std::vector<std::shared_ptr<Minion>> minions1, minions2;
+  std::vector<TriggerObserver *> observersPlayer1, observersPlayer2;
 public:
   std::string getDraw();
 
   int whoseTurn();
+
+  int opponent();
+
+  std::shared_ptr<Minion> minion(int player, int slot);
 
   void drawCard(int player);
 
@@ -44,7 +43,7 @@ public:
 
   void use(int player, int slot, int targPlayer, int target);
 
-  void injure(int player, int slot);
+  void injure(int player, int slot, int damage);
 
   void destroy(int player, int slot);
 
