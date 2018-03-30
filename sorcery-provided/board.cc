@@ -33,11 +33,28 @@ int Board::opponent() {
 }
 
 void Board::drawCard(int player) {
+  if(player == 1) p1->drawCard();
+  else p2->drawCard();
 
 }
 
 void Board::play(int player, int slot) {
-
+  shared_ptr<Card> c;
+  if(player == 1) c = p1->playCard(card);
+  else c = p2->playCard(card);
+  if (dynamic_pointer_cast<Minion>(c)){
+    summon(player, c);
+  }
+  else if (dynamic_pointer_cast<Ritual>(c)){
+    destroy(player, 0);
+    if (player == 1) ritual1 = c;
+    else ritual2 = c;
+  }
+  else {
+    c->ability()->applyEffect();
+    if (player == 1) graveyard1->emplace_back(c);
+    else graveyard2->emplace_back(c);
+  }
 }
 
 void Board::play(int player, int slot, int targetPlayer, int targetSlot) {
