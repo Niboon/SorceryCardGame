@@ -61,7 +61,7 @@ public:
 
   card_template_t showHand(int player);
 
-  std::string getDraw();
+  card_template_t getDraw();
 
   Board(std::string p1, std::string p2, Card *cards, int initMagic, int initLife);
 
