@@ -2,13 +2,16 @@
 #define SUBJECT_H
 
 #include <vector>
+#include "triggerObserver.h"
+#include "phase.h"
 
 class Subject {
 public:
-  virtual void attach(int player, TriggerObserver observer) = 0;
+  virtual void attach(int player, TriggerObserver *observer) = 0;
 
-  virtual void detach(int player, TriggerObserver observer) = 0;
-//    virtual void notify(bool isYourTurn, enum phase) = 0;
+  virtual void detach(int player, TriggerObserver *observer) = 0;
+
+  virtual void notify(bool isYourTurn, Phase phase) = 0;
 };
 
 

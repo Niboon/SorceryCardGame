@@ -6,10 +6,10 @@ using namespace std;
 Controller::Controller(
         vector<string> deck1,
         vector<string> deck2,
-        string player1Name,
-        string player2Name) {
-  cout << player1Name << player2Name << endl;
-}
+        const string &player1Name,
+        const string &player2Name )
+        : board{make_unique<Board>(deck1,deck2,player1Name,player2Name)}
+{}
 
 void Controller::play(int card) {
   cout << "play " << card << endl;
@@ -28,16 +28,14 @@ void Controller::use(int card, int playerTarget, int cardTarget) {
 }
 
 void Controller::attack(int minion) {
-  board->injure(opponent(), 0, board->minion(whoseTurn(), minion)->getAtk());
-
+  board->injure(board->opponent(), board->getMinion(board->whoseTurn(), minion)->getAtk());
 }
 
 void Controller::attack(int minion, int otherMinion) {
-  int minionAtk = board->minion(whoseTurn(), minion)->getAtk();
-  int otherMinionAtk = board->minion(opponent(), otherMionion)->getAtk();
-  board->injure(opponent(), otherMinion, minionAtk);
-  board->injure(whoseTurn(), minion, otherMinionAtk);
-
+  int minionAtk = board->getMinion(board->whoseTurn(), minion)->getAtk();
+  int otherMinionAtk = board->getMinion(board->opponent(), otherMinion)->getAtk();
+  board->injure(board->opponent(), minionAtk, otherMinion);
+  board->injure(board->whoseTurn(), otherMinionAtk, minion);
 }
 
 void Controller::drawInspect(int minion) {

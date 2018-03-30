@@ -3,14 +3,15 @@
 
 #include <string>
 #include <vector>
+#include "board.h"
 
 
 class Controller {
 private:
-//    Board *board;
+  std::unique_ptr<Board> board;
 public:
-  Controller(std::vector<std::string> deck1, std::vector<std::string> deck2, std::string player1Name,
-             std::string player2Name);
+  Controller(std::vector<std::string> deck1, std::vector<std::string> deck2,
+             const std::string &player1Name, const std::string &player2Name);
 
   void play(int card);
 
