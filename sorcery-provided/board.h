@@ -24,7 +24,7 @@ private:
   std::vector<TriggerObserver *> observersPlayer1, observersPlayer2;
 public:
   Board(std::vector<std::string> deck1, std::vector<std::string> deck2,
-        std::string name1, std::string name2);
+        std::string name1, std::string name2, std::vector<std::string> loader);
 
   void attach(int player, TriggerObserver *observer) override;
 

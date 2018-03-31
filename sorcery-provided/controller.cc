@@ -3,12 +3,12 @@
 
 using namespace std;
 
-Controller::Controller(
-        vector<string> deck1,
-        vector<string> deck2,
-        const string &player1Name,
-        const string &player2Name )
-        : board{make_unique<Board>(deck1,deck2,player1Name,player2Name)}
+Controller::Controller( vector<string> deck1,
+                        vector<string> deck2,
+                        const string &player1Name,
+                        const string &player2Name,
+                        vector<string> loader)
+        : board{make_unique<Board>(deck1,deck2,player1Name,player2Name,loader)}
 {}
 
 void Controller::play(int card) {

@@ -9,6 +9,7 @@ int main(int argc, char *argv[]) {
 
   string deckFile1 = "default.deck";
   string deckFile2 = "default.deck";
+  string loaderFile = "loader.in";
   string initFile;
 
   for (int i = 1; i < argc; ++i) {
@@ -22,6 +23,9 @@ int main(int argc, char *argv[]) {
     } else if (argument == "-init") {
       ++i;
       initFile = argv[i];
+    } else if (argument == "-loader") {
+      ++i;
+      loaderFile = argv[i];
     } else if (argument == "-testing") {
       // Enable discard and draw inputs
       // Disable Magic Requirement
@@ -32,10 +36,11 @@ int main(int argc, char *argv[]) {
   }
 
   // construct Controller with deck1 and deck2 as vectors of strings
-  vector<string> deck1, deck2, init;
+  vector<string> deck1, deck2, cardLoader, init;
   try {
     deck1 = readFileToVector(deckFile1);
     deck2 = readFileToVector(deckFile2);
+    cardLoader = readFileToVector(loaderFile);
     if (!initFile.empty()) {
       init = readFileToVector(initFile);
     }
@@ -55,7 +60,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  Controller game{deck1, deck2, player1Name, player2Name};
+  Controller game{deck1, deck2, player1Name, player2Name, cardLoader};
 
   for (auto it = init.begin() + 2; it != init.end(); ++it) {
     processLineOfCmd(*it, game);

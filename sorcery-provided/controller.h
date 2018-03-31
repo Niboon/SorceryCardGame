@@ -11,7 +11,8 @@ private:
   std::unique_ptr<Board> board;
 public:
   Controller(std::vector<std::string> deck1, std::vector<std::string> deck2,
-             const std::string &player1Name, const std::string &player2Name);
+             const std::string &player1Name, const std::string &player2Name,
+             std::vector<std::string> loader);
 
   void play(int card);
 

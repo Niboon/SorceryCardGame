@@ -15,7 +15,7 @@ public:
 
   void addCard(std::unique_ptr<Card> newCard);
 
-  std::string getDraw();
+  card_template_t getDraw() const;
 
   Hand(Hand &other);
 

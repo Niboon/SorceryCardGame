@@ -6,6 +6,8 @@ using namespace std;
 
 
 Board::Board(vector<string> deck1, vector<string> deck2, string name1, string name2) {
+Board::Board(vector<string> deck1, vector<string> deck2, string name1, string name2,
+             vector<string> loader) {
 //    init player1
 //
 //    init player2
@@ -82,7 +84,7 @@ void Board::destroy(int player, int slot) {
 }
 
 
-void Board::enchant(int player, int minion, std::unique_ptr<EnchantmentCard> enchantmentCard) {
+void Board::enchant(int player, int minion, unique_ptr<EnchantmentCard> enchantmentCard) {
   if (player == 1){
     minions1.at(minion) = doEnchant(move(minions1.at(minion)), move(enchantmentCard));
   }
@@ -91,7 +93,7 @@ void Board::enchant(int player, int minion, std::unique_ptr<EnchantmentCard> enc
   }
 }
 
-std::shared_ptr<Minion> &Board::getMinion(int player, int slot) {
+shared_ptr<Minion> &Board::getMinion(int player, int slot) {
   if (player == 1) {
     return minions1.at(slot);
   } else {
@@ -99,7 +101,7 @@ std::shared_ptr<Minion> &Board::getMinion(int player, int slot) {
   }
 }
 
-void Board::summon(int player, std::shared_ptr<Minion> minion) {
+void Board::summon(int player, shared_ptr<Minion> minion) {
 
 }
 

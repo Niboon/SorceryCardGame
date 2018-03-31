@@ -3,9 +3,9 @@
 using namespace std;
 
 
-Player::Player(const string &name, vector<string> cardNames) :
+Player::Player(const std::string &name, std::vector<std::string> cardNames, std::vector<std::string> loader) :
         name{name},
-        deck{make_unique<Deck>(cardNames)}
+        deck{move(make_unique<Deck>(cardNames, loader))}
 {
   magic = STARTING_MAGIC;
   life = STARTING_LIFE;
@@ -14,24 +14,20 @@ Player::Player(const string &name, vector<string> cardNames) :
   }
 }
 
-Player::Player(Player &other) {
-
-}
-
 void Player::drawCard() {
-
+  hand->addCard(move(deck->popCard()));
 }
 
 std::unique_ptr<Card> Player::getCard(int num) {
-  return hand->takeCard(num);
+  return move(hand->takeCard(num));
 }
 
-card_template_t Player::showHand() {
-  return card_template_t();
+card_template_t Player::showHand() const{
+  return hand->getDraw();
 }
 
-card_template_t Player::getDraw() {
-  return card_template_t();
+card_template_t Player::getDraw(int playerNumber) const{
+  return display_player_card(playerNumber, name, life, magic);
 }
 
 Player::~Player() {

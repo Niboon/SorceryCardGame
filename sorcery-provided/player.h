@@ -18,17 +18,15 @@ private:
   std::unique_ptr<Deck> deck;
   std::unique_ptr<Hand> hand;
 public:
-  Player(const std::string &name, std::vector<std::string> cardNames);
-
-  Player(Player &other);
+  Player(const std::string &name, std::vector<std::string> cardNames, std::vector<std::string> loader);
 
   void drawCard();
 
   std::unique_ptr<Card> getCard(int num);
 
-  card_template_t showHand();
+  card_template_t showHand() const;
 
-  card_template_t getDraw();
+  card_template_t getDraw(int playerNumber) const;
 
   ~Player();
 };
