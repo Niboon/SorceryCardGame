@@ -9,20 +9,18 @@
 
 class Deck {
 private:
+  std::vector<std::unique_ptr<Card>> cards;
+
 public:
   Deck(std::vector<std::string> cardNames, std::vector<std::string> loader);
 
-  std::vector<std::unique_ptr<Card>> cards;
-
   void shuffleDeck(int nonce=1);
+
+  int getSize() const;
 
   std::unique_ptr<Card> popCard();
 
   void pushCard(std::unique_ptr<Card> newCard);
-
-  Deck(Deck &other);
-
-  ~Deck();
 };
 
 void insertPair(std::map<std::string, std::string> &params, const std::string &key, std::stringstream &ss);

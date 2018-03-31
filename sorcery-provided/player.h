@@ -20,7 +20,7 @@ private:
 public:
   Player(const std::string &name, std::vector<std::string> cardNames, std::vector<std::string> loader);
 
-  void drawCard();
+  bool drawCard();
 
   std::unique_ptr<Card> getCard(int num);
 

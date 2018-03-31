@@ -2,16 +2,18 @@
 
 using namespace std;
 
-Hand::Hand() = default;
-
 unique_ptr<Card> Hand::takeCard(int which) {
   unique_ptr<Card> ret{move(cards.at(which))};
   cards.erase(cards.begin() + which);
   return move(ret);
 }
 
-void Hand::addCard(unique_ptr<Card> newCard) {
-  cards.emplace_back(move(newCard));
+bool Hand::addCard(unique_ptr<Card> newCard) {
+  if (getSize() < HAND_CARD_LIMIT) {
+    cards.emplace_back(move(newCard));
+    return true;
+  }
+  return false;
 }
 
 card_template_t Hand::getDraw() const {
@@ -26,10 +28,6 @@ card_template_t Hand::getDraw() const {
   return ret;
 }
 
-Hand::Hand(Hand &other) {
-
-}
-
-Hand::~Hand() {
-
+int Hand::getSize() const {
+  return static_cast<int>(cards.size());
 }

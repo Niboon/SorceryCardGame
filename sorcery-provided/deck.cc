@@ -43,25 +43,23 @@ void Deck::shuffleDeck(int nonce) {
   random_shuffle(cards.begin(), cards.end());
 }
 
+int Deck::getSize() const {
+  return static_cast<int>(cards.size());
+}
+
 unique_ptr<Card> Deck::popCard() {
-  unique_ptr<Card> ret{move(cards.back())};
-  cards.pop_back();
-  return move(ret);
+  if (!cards.empty()) {
+    unique_ptr<Card> ret{move(cards.back())};
+    cards.pop_back();
+    return move(ret);
+  }
+  return nullptr;
 }
 
 void Deck::pushCard(unique_ptr<Card> newCard) {
   cards.emplace_back(move(newCard));
   shuffleDeck();
 }
-
-Deck::Deck(Deck &other) {
-
-}
-
-Deck::~Deck() {
-
-}
-
 
 void loadCard(const string &name, map<string, string> &cardParams, vector<unique_ptr<Card>> &deckCards) {
   basic_string<char> &type = cardParams.at("type");

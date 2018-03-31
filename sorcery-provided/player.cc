@@ -14,8 +14,12 @@ Player::Player(const std::string &name, std::vector<std::string> cardNames, std:
   }
 }
 
-void Player::drawCard() {
-  hand->addCard(move(deck->popCard()));
+// returns whether draw was successful
+bool Player::drawCard() {
+  if (deck->getSize()>0) {
+    return hand->addCard(move(deck->popCard()));
+  }
+  return false;
 }
 
 std::unique_ptr<Card> Player::getCard(int num) {
