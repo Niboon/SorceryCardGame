@@ -11,8 +11,7 @@
 #include "StatsEnchantmentCard.h"
 #include "AbilityEnchantmentCard.h"
 #include "triggerObserver.h"
-
-class Player;
+#include "player.h"
 
 class Board : public Subject {
 private:
@@ -62,8 +61,6 @@ public:
   card_template_t showHand(int player);
 
   card_template_t getDraw();
-
-  Board(std::string p1, std::string p2, Card *cards, int initMagic, int initLife);
 
   ~Board();
 };
