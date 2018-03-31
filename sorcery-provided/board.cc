@@ -5,7 +5,6 @@
 using namespace std;
 
 
-Board::Board(vector<string> deck1, vector<string> deck2, string name1, string name2) {
 Board::Board(vector<string> deck1, vector<string> deck2, string name1, string name2,
              vector<string> loader) {
 //    init player1
