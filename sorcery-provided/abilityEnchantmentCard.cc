@@ -17,22 +17,22 @@ int AbilityEnchantmentCard::getCost() const {
 }
 
 int AbilityEnchantmentCard::getAtk() const {
-  return nullptr;
+  return 0;
 }
 
 int AbilityEnchantmentCard::getDef() const {
-  return nullptr;
+  return 0;
 }
 
 int AbilityEnchantmentCard::getAbility() const {
-  return ability;
+  return 0;
 }
 
-card_template_t AbilityEnchantmentCard::getDraw() {
+card_template_t AbilityEnchantmentCard::getDraw() const {
   return display_enchantment_attack_defence(
           getName(),
           getCost(),
-          getAbility(),
+          "getAbility()",
           "",
           "");
 }
