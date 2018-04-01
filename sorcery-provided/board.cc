@@ -95,23 +95,29 @@ void Board::destroy(int player, int slot) {
 
 void Board::enchant(int player, int minion, unique_ptr<EnchantmentCard> enchantmentCard) {
   if (player == 1){
-    minions1.at(minion) = doEnchant(move(minions1.at(minion)), move(enchantmentCard));
+    minions1.at(minion-1) = doEnchant(move(minions1.at(minion-1)), move(enchantmentCard));
   }
   else if (player == 2){
-    minions2.at(minion) = doEnchant(move(minions1.at(minion)), move(enchantmentCard));
+    minions2.at(minion-1) = doEnchant(move(minions1.at(minion-1)), move(enchantmentCard));
   }
 }
 
-shared_ptr<Minion> &Board::getMinion(int player, int slot) {
+unique_ptr<Minion> Board::getMinion(int player, int slot) {
   if (player == 1) {
-    return minions1.at(slot);
+    unique_ptr<Minion> ptr = move(minions1.at(slot - 1));
+    return move(ptr);
   } else {
-    return minions2.at(slot);
+    unique_ptr<Minion> ptr = move(minions2.at(slot - 1));
+    return move(ptr);
   }
 }
 
-void Board::summon(int player, shared_ptr<Minion> minion) {
-
+void Board::summon(int player, unique_ptr<Minion> creature) {
+  if (player == 1) {
+    minions1.emplace_back(move(creature));
+  } else {
+    minions2.emplace_back(move(creature));
+  }
 }
 
 void Board::endTurn() {
@@ -131,11 +137,11 @@ Board::~Board() {
 
 }
 
-shared_ptr<Enchantment> doEnchant(shared_ptr<Minion> minion,
+unique_ptr<Enchantment> doEnchant(unique_ptr<Minion> minion,
                                   unique_ptr<EnchantmentCard> enchantmentCard) {
   if (enchantmentCard->getAbility()) {
-    return make_shared<AbilityEnchantment>(move(minion), move(enchantmentCard));
+    return move(make_unique<AbilityEnchantment>(move(minion), move(enchantmentCard)));
   } else {
-    return make_shared<StatsEnchantment>(move(minion), move(enchantmentCard));
+    return move(make_unique<StatsEnchantment>(move(minion), move(enchantmentCard)));
   }
 }
