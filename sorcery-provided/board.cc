@@ -71,14 +71,14 @@ void Board::use(int player, int slot, int targetPlayer, int targetSlot) {
 
 }
 
-void Board::injure(int player, int damage) {
-  if (player == 1) p1->damage(damage);
-  else p2->damage(damage);
+void Board::injure(int player, int amount) {
+  if(player == 1) p1->changeLife(-amount);
+  else p2->changeLife(-amount);
 }
 
-void Board::injure(int player, int damage, int slot) {
-  if (player == 1) minions1.at(slot)->damage(damage);
-  else minions2.at(slot)->damage(damage);
+void Board::injure(int player, int amount, int slot) {
+  if(player == 1) minions1.at(slot-1)->changeDef(-amount);
+  else minions2.at(slot-1)->changeDef(-amount);
 }
 
 void Board::destroy(int player, int slot) {
