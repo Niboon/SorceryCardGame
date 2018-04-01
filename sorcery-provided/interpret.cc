@@ -7,7 +7,7 @@
 
 using namespace std;
 
-bool processLineOfCmd(const string &line, Controller game) {// processes commands by single lines
+bool processLineOfCmd(const string &line, Controller &game) {// processes commands by single lines
   stringstream ss(line);
   string cmd;
   ss >> std::ws;

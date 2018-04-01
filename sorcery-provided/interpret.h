@@ -9,6 +9,6 @@ bool handleActionWith1Target(std::stringstream &ss, const std::string &cmd, int 
 
 bool handleActionWith2Targets(std::stringstream &ss, int &card, int &targetPlayer, int &targetCard);
 
-bool processLineOfCmd(const std::string &line, Controller game);
+bool processLineOfCmd(const std::string &line, Controller &game);
 
 #endif //INTERPRET_H
