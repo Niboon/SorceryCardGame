@@ -1,6 +1,8 @@
 #include "board.h"
 #include "statsEnchantment.h"
 #include "abilityEnchantment.h"
+#include "creature.h"
+#include "spell.h"
 
 using namespace std;
 
@@ -40,97 +42,95 @@ void Board::drawCard(int player) {
 }
 
 void Board::play(int player, int slot) {
-  shared_ptr<Card> c;
-  if(player == 1) c = p1->playCard(card);
-  else c = p2->playCard(card);
-  if (dynamic_pointer_cast<Minion>(c)){
-    summon(player, c);
-  }
-  else if (dynamic_pointer_cast<Ritual>(c)){
-    destroy(player, 0);
-    if (player == 1) ritual1 = c;
-    else ritual2 = c;
-  }
-  else {
-    c->ability()->applyEffect();
-    if (player == 1) graveyard1->emplace_back(c);
-    else graveyard2->emplace_back(c);
+  Player *p = getPlayer(player);
+  unique_ptr<Card> card = p->getCard(slot);
+  if (auto creaturePtr = dynamic_cast<Creature*>(card.get())){
+    card.release();
+    summon(player, move(unique_ptr<Minion>{creaturePtr}));
+  } else if (auto ritualPtr = dynamic_cast<Ritual*>(card.get())){
+    card.release();
+    unique_ptr<Ritual> newRitual{ritualPtr};
+    (player == 1) ? ritual1.swap(newRitual) : ritual2.swap(newRitual);
+  } else if (auto spellPtr = dynamic_cast<Spell*>(card.get())){
+    card.release();
+    unique_ptr<Spell> spell = move(unique_ptr<Spell>(spellPtr));
+//    spell->getAbility()->applyEffect(this);
   }
 }
 
 void Board::play(int player, int slot, int targetPlayer, int targetSlot) {
-
+  Player *p = getPlayer(player);
+  unique_ptr<Card> card = p->getCard(slot);
+  if (auto statsEnchantmentCardPtr = dynamic_cast<StatsEnchantmentCard*>(card.get())){
+    card.release();
+    enchant(targetPlayer,
+            targetSlot,
+            move(unique_ptr<EnchantmentCard>{statsEnchantmentCardPtr})
+    );
+  } else if (auto abilityEnchantmentCardPtr = dynamic_cast<AbilityEnchantmentCard*>(card.get())){
+    card.release();
+    enchant(targetPlayer,
+            targetSlot,
+            move(unique_ptr<EnchantmentCard>{abilityEnchantmentCardPtr})
+    );
+  } else if (auto spellPtr = dynamic_cast<Spell*>(card.get())){
+    card.release();
+    unique_ptr<Spell> spell = move(unique_ptr<Spell>(spellPtr));
+//    spell->getAbility()->applyEffect(targetPlayer, targetSlot, this);
+  }
 }
 
 void Board::use(int player, int slot) {
-  if (player == 1) minions1.at(slot)->ability()->applyEffect();
-  else minions2.at(slot)->ability()->applyEffect();
+  vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
+  unique_ptr<Minion> &minion = minions.at(slot-1);
+//  minion->getAbility()->applyEffect(this);
 }
 
 void Board::use(int player, int slot, int targetPlayer, int targetSlot) {
-
+  vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
+  unique_ptr<Minion> &minion = minions.at(slot-1);
+//  minion->getAbility()->applyEffect(targetPlayer, targetSlot, this);
 }
 
 void Board::injure(int player, int amount) {
-  if(player == 1) p1->changeLife(-amount);
-  else p2->changeLife(-amount);
+  Player *p = getPlayer(player);
+  p->changeLife(-amount);
 }
 
 void Board::injure(int player, int amount, int slot) {
-  if(player == 1) minions1.at(slot-1)->changeDef(-amount);
-  else minions2.at(slot-1)->changeDef(-amount);
+  vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
+  minions.at(slot-1)->changeDef(-amount);
 }
 
 void Board::destroy(int player, int slot) {
-  if (player == 1){
-    if (slot) minions1.erase(begin()+slot-1);
-    else ritual1 = nullptr;
-  }
-  else{
-    if (slot) minions2.erase(being()+slot-1);
-    else ritual2 = nullptr;
-  }
+  vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
+  unique_ptr<Minion> minion = move(minions.at(slot - 1));
+//  minion->destroy();
+  minions.erase(minions.begin() + slot);
+  graveyard1.emplace_back(minion.get());
 }
 
 
 void Board::enchant(int player, int minion, unique_ptr<EnchantmentCard> enchantmentCard) {
-  if (player == 1){
-    minions1.at(minion-1) = doEnchant(move(minions1.at(minion-1)), move(enchantmentCard));
-  }
-  else if (player == 2){
-    minions2.at(minion-1) = doEnchant(move(minions1.at(minion-1)), move(enchantmentCard));
-  }
+  vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
+  minions.at(minion - 1) = doEnchant(move(minions.at(minion - 1)), move(enchantmentCard));
 }
 
-unique_ptr<Minion> Board::getMinion(int player, int slot) {
-  if (player == 1) {
-    unique_ptr<Minion> ptr = move(minions1.at(slot - 1));
-    return move(ptr);
-  } else {
-    unique_ptr<Minion> ptr = move(minions2.at(slot - 1));
-    return move(ptr);
-  }
+const unique_ptr<Minion> &Board::getMinion(int player, int slot) {
+  return refPlayerMinions(player).at(slot - 1);
 }
 
 void Board::summon(int player, unique_ptr<Minion> creature) {
-  if (player == 1) {
-    minions1.emplace_back(move(creature));
-  } else {
-    minions2.emplace_back(move(creature));
-  }
+  vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
+  minions.emplace_back(move(creature));
 }
 
 void Board::endTurn() {
-  if (activePlayer == 1) {
-    activePlayer = 2;
-  } else {
-    activePlayer = 1;
-  }
+  activePlayer = opponent();
 }
 
 card_template_t Board::showHand(int player) {
-  if (player == 1) return p1->showHand();
-  else return p2->showHand();
+  return getPlayer(player)->showHand();
 }
 
 card_template_t Board::getDraw() {
@@ -138,17 +138,20 @@ card_template_t Board::getDraw() {
 }
 
 card_template_t Board::inspect(int player, int slot) {
-  if (player == 1) {
-    const unique_ptr<Minion> &minion = minions1.at(slot - 1);
-    return minion->getDraw();
-  } else {
-    const unique_ptr<Minion> &minion = minions2.at(slot - 1);
-    return minion->getDraw();
-  }
+    return getMinion(player, slot)->getDraw();
 }
 
 Board::~Board() {
 
+}
+
+Player *Board::getPlayer(int player) {
+  return (player == 1) ? p1.get() : p2.get();
+}
+
+vector<unique_ptr<Minion>> &Board::refPlayerMinions(int player) {
+  vector<unique_ptr<Minion>> &minions = (player == 1) ? minions1 : minions2;
+  return minions;
 }
 
 unique_ptr<Enchantment> doEnchant(unique_ptr<Minion> minion,

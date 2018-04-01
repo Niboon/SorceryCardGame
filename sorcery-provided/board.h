@@ -22,6 +22,10 @@ private:
   std::unique_ptr<Ritual> ritual1, ritual2;
   std::vector<std::unique_ptr<Minion>> minions1, minions2;
   std::vector<TriggerObserver *> observersPlayer1, observersPlayer2;
+
+  std::vector<std::unique_ptr<Minion>> &refPlayerMinions(int player);
+
+  Player *getPlayer(int player);
 public:
   Board(std::vector<std::string> deck1, std::vector<std::string> deck2,
         std::string name1, std::string name2, std::vector<std::string> loader);
@@ -36,7 +40,7 @@ public:
 
   int opponent();
 
-  std::unique_ptr<Minion> getMinion(int player, int slot);
+  const std::unique_ptr<Minion> &getMinion(int player, int slot);
 
   void drawCard(int player);
 
