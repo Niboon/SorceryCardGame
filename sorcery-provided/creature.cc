@@ -30,7 +30,7 @@ void Creature::changeAtk(int amount) {
 }
 
 void Creature::changeDef(int amount) {
-  atk += amount;
+  def += amount;
 }
 
 int Creature::getAbility() const {
