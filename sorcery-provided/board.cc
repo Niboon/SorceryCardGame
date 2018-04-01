@@ -31,7 +31,7 @@ int Board::whoseTurn() {
 }
 
 int Board::opponent() {
-  return (activePlayer == 1) ? 1 : 2;
+  return (activePlayer == 1) ? 2 : 1;
 }
 
 void Board::drawCard(int player) {
