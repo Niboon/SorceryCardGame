@@ -15,8 +15,6 @@ public:
 
   int getDef() const override;
 
-  std::string getType() const override;
-
   int getAbility() const override;
 
   ~StatsEnchantment() override;

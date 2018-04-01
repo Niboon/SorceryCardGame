@@ -25,10 +25,6 @@ int StatsEnchantment::getDef() const {
   return Enchantment::getDef() + enchantmentCard->getDef();
 }
 
-std::string StatsEnchantment::getType() const {
-  return "StatsEnchantment";
-}
-
 int StatsEnchantment::getAbility() const {
   return 0;
 }

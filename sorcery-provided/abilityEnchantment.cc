@@ -17,10 +17,6 @@ int AbilityEnchantment::getDef() const {
   return Enchantment::getDef();
 }
 
-std::string AbilityEnchantment::getType() const {
-  return "AbilityEnchantment";
-}
-
 int AbilityEnchantment::getAbility() const {
   return enchantmentCard->getAbility();
 }

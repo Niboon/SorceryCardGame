@@ -10,8 +10,6 @@ public:
 
   std::string getName() const override;
 
-  std::string getType() const override;
-
   int getCost() const override;
 
   int getAtk() const override;

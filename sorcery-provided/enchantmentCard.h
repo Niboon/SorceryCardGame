@@ -11,8 +11,6 @@ public:
 
   virtual int getCost() const = 0;
 
-  virtual std::string getType() const = 0;
-
   virtual card_template_t getDraw() const = 0;
 
   virtual int getAtk() const = 0;

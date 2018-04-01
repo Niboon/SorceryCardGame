@@ -12,8 +12,6 @@ public:
 
   int getCost() const override;
 
-  std::string getType() const override;
-
   int getAtk() const override;
 
   int getDef() const override;

@@ -17,10 +17,6 @@ int StatsEnchantmentCard::getCost() const {
   return cost;
 }
 
-std::string StatsEnchantmentCard::getType() const {
-  return "StatsEnchantmentCard";
-}
-
 int StatsEnchantmentCard::getAtk() const {
   return atk;
 }
