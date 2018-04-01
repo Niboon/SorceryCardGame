@@ -121,7 +121,11 @@ void Board::summon(int player, unique_ptr<Minion> creature) {
 }
 
 void Board::endTurn() {
-
+  if (activePlayer == 1) {
+    activePlayer = 2;
+  } else {
+    activePlayer = 1;
+  }
 }
 
 card_template_t Board::showHand(int player) {
@@ -131,6 +135,16 @@ card_template_t Board::showHand(int player) {
 
 card_template_t Board::getDraw() {
   return CENTRE_GRAPHIC;
+}
+
+card_template_t Board::inspect(int player, int slot) {
+  if (player == 1) {
+    const unique_ptr<Minion> &minion = minions1.at(slot - 1);
+    return minion->getDraw();
+  } else {
+    const unique_ptr<Minion> &minion = minions2.at(slot - 1);
+    return minion->getDraw();
+  }
 }
 
 Board::~Board() {
