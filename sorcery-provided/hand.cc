@@ -3,13 +3,13 @@
 using namespace std;
 
 unique_ptr<Card> Hand::takeCard(int which) {
-  unique_ptr<Card> ret{move(cards.at(which))};
-  cards.erase(cards.begin() + which);
+  unique_ptr<Card> ret{move(cards.at(which-1))};
+  cards.erase(cards.begin() + (which-1));
   return move(ret);
 }
 
 bool Hand::addCard(unique_ptr<Card> newCard) {
-  if (getSize() < HAND_CARD_LIMIT) {
+  if (getSize() < HAND_CARD_LIMIT && newCard) {
     cards.emplace_back(move(newCard));
     return true;
   }
@@ -29,5 +29,9 @@ card_template_t Hand::getDraw() const {
 }
 
 int Hand::getSize() const {
-  return static_cast<int>(cards.size());
+  if (!cards.empty()) {
+    return static_cast<int>(cards.size());
+  } else {
+    return 0;
+  }
 }

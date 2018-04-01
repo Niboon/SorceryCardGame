@@ -19,6 +19,7 @@ public:
 
 private:
 //    Ability ability;
+    int ability;
 };
 
 #endif //SPELL_H

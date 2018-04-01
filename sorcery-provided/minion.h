@@ -17,6 +17,10 @@ public:
 
   virtual int getDef() const = 0;
 
+  virtual void changeAtk(int amount) = 0;
+
+  virtual void changeDef(int amount) = 0;
+
   virtual int getAbility() const = 0;
 
   ~Minion() override = default;

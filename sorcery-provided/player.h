@@ -22,6 +22,8 @@ public:
 
   bool drawCard();
 
+  void changeLife(int offset);
+
   std::unique_ptr<Card> getCard(int num);
 
   card_template_t showHand() const;

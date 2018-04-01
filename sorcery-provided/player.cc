@@ -5,7 +5,8 @@ using namespace std;
 
 Player::Player(const std::string &name, std::vector<std::string> cardNames, std::vector<std::string> loader) :
         name{name},
-        deck{move(make_unique<Deck>(cardNames, loader))}
+        deck{move(make_unique<Deck>(cardNames, loader))},
+        hand{move(make_unique<Hand>())}
 {
   magic = STARTING_MAGIC;
   life = STARTING_LIFE;
@@ -20,6 +21,10 @@ bool Player::drawCard() {
     return hand->addCard(move(deck->popCard()));
   }
   return false;
+}
+
+void Player::changeLife(int offset) {
+  life += offset;
 }
 
 std::unique_ptr<Card> Player::getCard(int num) {

@@ -25,15 +25,22 @@ int Creature::getDef() const {
   return def;
 }
 
+void Creature::changeAtk(int amount) {
+  atk += amount;
+}
+
+void Creature::changeDef(int amount) {
+  atk += amount;
+}
+
 int Creature::getAbility() const {
   return ability;
 }
 
 card_template_t Creature::getDraw() const {
-  return display_enchantment_attack_defence(
+  return display_minion_no_ability(
           getName(),
           getCost(),
-          "",
-          to_string(getAtk()),
-          to_string(getDef()));
+          getAtk(),
+          getDef());
 }

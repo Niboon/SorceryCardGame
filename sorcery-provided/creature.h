@@ -16,6 +16,10 @@ public:
 
   int getDef() const override;
 
+  void changeAtk(int amount) override;
+
+  void changeDef(int amount) override;
+
   int getAbility() const override;
 
   card_template_t getDraw() const override;
