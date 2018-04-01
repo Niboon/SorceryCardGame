@@ -8,7 +8,7 @@
 
 class Enchantment : public Minion {
 public:
-  explicit Enchantment(std::shared_ptr<Minion> minion);
+  explicit Enchantment(std::unique_ptr<Minion> minion);
 
   virtual card_template_t getDraw() const;
 
@@ -20,12 +20,16 @@ public:
 
   virtual int getDef() const;
 
+  virtual void changeAtk(int amount);
+
+  virtual void changeDef(int amount);
+
   virtual int getAbility() const;
 
   ~Enchantment() override;
 
 private:
-  std::shared_ptr<Minion> minion;
+  std::unique_ptr<Minion> minion;
 };
 
 

@@ -1,6 +1,6 @@
 #include "enchantment.h"
 
-Enchantment::Enchantment(std::shared_ptr<Minion> minion) : minion{std::move(minion)} {}
+Enchantment::Enchantment(std::unique_ptr<Minion> minion) : minion{std::move(minion)} {}
 
 card_template_t Enchantment::getDraw() const {
   return minion->getDraw();
@@ -8,6 +8,14 @@ card_template_t Enchantment::getDraw() const {
 
 int Enchantment::getAtk() const {
   return minion->getAtk();
+}
+
+void Enchantment::changeAtk(int amount) {
+  minion->changeAtk(amount);
+}
+
+void Enchantment::changeDef(int amount) {
+  minion->changeDef(amount);
 }
 
 int Enchantment::getDef() const {

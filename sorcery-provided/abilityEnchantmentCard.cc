@@ -12,6 +12,10 @@ string AbilityEnchantmentCard::getName() const {
   return name;
 }
 
+string AbilityEnchantmentCard::getType() const {
+  return "AbilityEnchantmentCard";
+}
+
 int AbilityEnchantmentCard::getCost() const {
   return cost;
 }

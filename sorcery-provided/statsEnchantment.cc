@@ -5,17 +5,16 @@
 
 using namespace std;
 
-StatsEnchantment::StatsEnchantment(std::shared_ptr<Minion> minion, unique_ptr<EnchantmentCard> enchantmentCard) :
+StatsEnchantment::StatsEnchantment(unique_ptr<Minion> minion, unique_ptr<EnchantmentCard> enchantmentCard) :
         Enchantment{move(minion)}, enchantmentCard{move(enchantmentCard)}
 {}
 
 card_template_t StatsEnchantment::getDraw() const {
-  return display_enchantment_attack_defence(
+  return display_minion_no_ability(
           Enchantment::getName(),
           Enchantment::getCost(),
-          "",
-          to_string(getAtk()),
-          to_string(getDef()));
+          getAtk(),
+          getDef());
 }
 
 int StatsEnchantment::getAtk() const {
@@ -24,6 +23,10 @@ int StatsEnchantment::getAtk() const {
 
 int StatsEnchantment::getDef() const {
   return Enchantment::getDef() + enchantmentCard->getDef();
+}
+
+std::string StatsEnchantment::getType() const {
+  return "StatsEnchantment";
 }
 
 int StatsEnchantment::getAbility() const {

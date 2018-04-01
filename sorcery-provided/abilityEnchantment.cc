@@ -1,6 +1,6 @@
 #include "abilityEnchantment.h"
 
-AbilityEnchantment::AbilityEnchantment(std::shared_ptr<Minion> minion,
+AbilityEnchantment::AbilityEnchantment(std::unique_ptr<Minion> minion,
                                        std::unique_ptr<EnchantmentCard> enchantmentCard) :
         Enchantment{move(minion)},enchantmentCard{move(enchantmentCard)}
 {}
@@ -15,6 +15,10 @@ int AbilityEnchantment::getAtk() const {
 
 int AbilityEnchantment::getDef() const {
   return Enchantment::getDef();
+}
+
+std::string AbilityEnchantment::getType() const {
+  return "AbilityEnchantment";
 }
 
 int AbilityEnchantment::getAbility() const {
