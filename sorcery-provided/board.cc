@@ -63,7 +63,8 @@ void Board::play(int player, int slot, int targetPlayer, int targetSlot) {
 }
 
 void Board::use(int player, int slot) {
-
+  if (player == 1) minions1.at(slot)->ability()->applyEffect();
+  else minions2.at(slot)->ability()->applyEffect();
 }
 
 void Board::use(int player, int slot, int targetPlayer, int targetSlot) {
@@ -71,15 +72,24 @@ void Board::use(int player, int slot, int targetPlayer, int targetSlot) {
 }
 
 void Board::injure(int player, int damage) {
-
+  if (player == 1) p1->damage(damage);
+  else p2->damage(damage);
 }
 
 void Board::injure(int player, int damage, int slot) {
-
+  if (player == 1) minions1.at(slot)->damage(damage);
+  else minions2.at(slot)->damage(damage);
 }
 
 void Board::destroy(int player, int slot) {
-
+  if (player == 1){
+    if (slot) minions1.erase(begin()+slot-1);
+    else ritual1 = nullptr;
+  }
+  else{
+    if (slot) minions2.erase(being()+slot-1);
+    else ritual2 = nullptr;
+  }
 }
 
 
