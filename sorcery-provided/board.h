@@ -39,7 +39,7 @@ public:
 
   int opponent();
 
-  const std::unique_ptr<Minion> &getMinion(int player, int slot);
+  std::unique_ptr<Minion> &getMinion(int player, int slot);
 
   void drawCard(int player);
 
@@ -69,6 +69,8 @@ public:
   card_template_t inspect(int player, int slot);
 
   ~Board();
+
+  bool hasMinion(int player, int slot);
 };
 
 std::unique_ptr <Enchantment> doEnchant(std::unique_ptr<Minion> minion,

@@ -81,14 +81,16 @@ void Board::play(int player, int slot, int targetPlayer, int targetSlot) {
 }
 
 void Board::use(int player, int slot) {
-  vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
-  unique_ptr<Minion> &minion = minions.at(slot-1);
+  if (!hasMinion(player, slot))
+    return;
+  unique_ptr<Minion> &minion = getMinion(player, slot);
 //  minion->getAbility()->applyEffect(this);
 }
 
 void Board::use(int player, int slot, int targetPlayer, int targetSlot) {
-  vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
-  unique_ptr<Minion> &minion = minions.at(slot-1);
+  if (!hasMinion(player, slot))
+    return;
+  unique_ptr<Minion> &minion = getMinion(player, slot);
 //  minion->getAbility()->applyEffect(targetPlayer, targetSlot, this);
 }
 
@@ -98,9 +100,10 @@ void Board::injure(int player, int amount) {
 }
 
 void Board::injure(int player, int amount, int slot) {
+  unique_ptr<Minion> &minion = getMinion(player, slot);
   vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
-  minions.at(slot-1)->changeDef(-amount);
-  if (minions.at(slot-1)->getDef() <= 0) destroy(player, slot);
+  minion->changeDef(-amount);
+  if (minion->getDef() <= 0) destroy(player, slot);
 }
 
 void Board::destroy(int player, int slot) {
@@ -112,13 +115,12 @@ void Board::destroy(int player, int slot) {
   graveyard.emplace_back(minion.get());
 }
 
-
 void Board::enchant(int player, int minion, unique_ptr<EnchantmentCard> enchantmentCard) {
   vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
   minions.at(minion - 1) = doEnchant(move(minions.at(minion - 1)), move(enchantmentCard));
 }
 
-const unique_ptr<Minion> &Board::getMinion(int player, int slot) {
+unique_ptr<Minion> &Board::getMinion(int player, int slot) {
   return refPlayerMinions(player).at(slot - 1);
 }
 
@@ -140,8 +142,13 @@ card_template_t Board::getDraw() {
 }
 
 card_template_t Board::inspect(int player, int slot) {
-    return getMinion(player, slot)->getDraw();
+  if (hasMinion(player, slot))
+    return (getMinion(player, slot))->getDraw();
+  else
+    return {"Error: There's no minion in that slot!"};
 }
+
+bool Board::hasMinion(int player, int slot) { return refPlayerMinions(player).size() >= slot; }
 
 Board::~Board() {
 
