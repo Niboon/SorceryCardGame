@@ -10,7 +10,6 @@
 #include "enchantment.h"
 #include "StatsEnchantmentCard.h"
 #include "AbilityEnchantmentCard.h"
-#include "triggerObserver.h"
 #include "player.h"
 #include "creature.h"
 
@@ -18,7 +17,7 @@ class Board : public Subject {
 private:
   std::unique_ptr<Player> p1, p2;
   int activePlayer;
-  std::vector<std::shared_ptr<Minion>> graveyard1, graveyard2;
+  std::vector<std::unique_ptr<Minion>> graveyard1, graveyard2;
   std::unique_ptr<Ritual> ritual1, ritual2;
   std::vector<std::unique_ptr<Minion>> minions1, minions2;
   std::vector<TriggerObserver *> observersPlayer1, observersPlayer2;

@@ -107,8 +107,9 @@ void Board::destroy(int player, int slot) {
   vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
   unique_ptr<Minion> minion = move(minions.at(slot - 1));
 //  minion->destroy();
-  minions.erase(minions.begin() + slot);
-  graveyard1.emplace_back(minion.get());
+  minions.erase(minions.begin() + (slot - 1));
+  vector<unique_ptr<Minion>> &graveyard = (player == 1) ? graveyard1 : graveyard2;
+  graveyard.emplace_back(minion.get());
 }
 
 
