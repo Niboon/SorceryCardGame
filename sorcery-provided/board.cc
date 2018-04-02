@@ -100,6 +100,7 @@ void Board::injure(int player, int amount) {
 void Board::injure(int player, int amount, int slot) {
   vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
   minions.at(slot-1)->changeDef(-amount);
+  if (minions.at(slot-1)->getDef() <= 0) destroy(player, slot);
 }
 
 void Board::destroy(int player, int slot) {
@@ -157,8 +158,10 @@ vector<unique_ptr<Minion>> &Board::refPlayerMinions(int player) {
 unique_ptr<Enchantment> doEnchant(unique_ptr<Minion> minion,
                                   unique_ptr<EnchantmentCard> enchantmentCard) {
   if (enchantmentCard->getAbility()) {
-    return move(make_unique<AbilityEnchantment>(move(minion), move(enchantmentCard)));
+    return move(make_unique<AbilityEnchantment>(move(minion), 
+                                                move(enchantmentCard)));
   } else {
-    return move(make_unique<StatsEnchantment>(move(minion), move(enchantmentCard)));
+    return move(make_unique<StatsEnchantment>(move(minion), 
+                                              move(enchantmentCard)));
   }
 }
