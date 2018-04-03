@@ -36,7 +36,9 @@ Deck::Deck(vector<string> cardNames, vector<string> loader) {
 // Shuffles deck of cards
 // Seeds rand using time, cards' address and an optional nonce to minimize synchronised shuffles
 void Deck::shuffleDeck(int nonce) {
-  const auto saltFromAddress = *(reinterpret_cast<int*>(cards.data())); // reinterpret_cast purely to get salt
+  auto randomAddress = vector<int>{1,1,3,4};
+  int *pInt = randomAddress.data();
+  const auto saltFromAddress = reinterpret_cast<long>(pInt); // reinterpret_cast purely to get salt
   const auto timeDerived = (2^nonce) * time(nullptr);
   const auto seed = static_cast<unsigned int>(timeDerived ^ saltFromAddress);
   srand(seed);
