@@ -4,7 +4,7 @@
 #include <ctime>
 #include "deck.h"
 #include "creature.h"
-#include "StatsEnchantmentCard.h"
+#include "statsEnchantmentCard.h"
 #include "abilityEnchantmentCard.h"
 //#include "ritual.h"
 //#include "spell.h"
