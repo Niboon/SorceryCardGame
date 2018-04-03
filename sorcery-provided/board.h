@@ -9,7 +9,7 @@
 #include "minion.h"
 #include "enchantment.h"
 #include "statsEnchantmentCard.h"
-#include "AbilityEnchantmentCard.h"
+#include "abilityEnchantmentCard.h"
 #include "player.h"
 #include "creature.h"
 
