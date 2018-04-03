@@ -1,24 +1,24 @@
 Air_Elemental -cost 0 -type Minion -atk 1 -def 1
 Earth_Elemental -cost 3 -type Minion -atk 4 -def 4
-Fire_Elemental -cost 2 -type TriggerMinion -phase OppSummon -target That -damage 1 -atk 2 -def 2 -desc Whenever_an_opponent's_minion_enters_play,_deal_1_damage_to_it.
-Potion_Seller -cost 2 -type TriggerMinion -phase MyEnd -target AllMyMinions -addDef 1 -atk 1 -def 3 -desc At_the_end_of_your_turn,_all_your_minions_gain_+0/+1.
+Fire_Elemental -cost 2 -type TriggerMinion -phase OppSummon -target That -changeDef -1 -atk 2 -def 2 -desc Whenever_an_opponent's_minion_enters_play,_deal_1_damage_to_it.
+Potion_Seller -cost 2 -type TriggerMinion -phase MyEnd -target AllMyMinions -changeDef 1 -atk 1 -def 3 -desc At_the_end_of_your_turn,_all_your_minions_gain_+0/+1.
 
-Novice_Pyromancer -cost 1 -type AbilityMinion -abilityCost 1 -target Injure -damage 1 -atk 0 -def 1 -desc Deal_1_damage_to_target_minion
+Novice_Pyromancer -cost 1 -type AbilityMinion -abilityCost 1 -target Minion -changeDef -1 -atk 0 -def 1 -desc Deal_1_damage_to_target_minion
 Apprentice_Summoner -cost 1 -type AbilityMinion -abilityCost 1 -summon Air_Elemental -atk 1 -def 1 -desc Summon_a_1/1_air_elemental
 Master_Summoner -cost 3 -type AbilityMinion -abilityCost 2 -summon 3_Air_Elemental -atk 2 -def 3 -desc Summon_up_to_three_1/1_air_elementals
 
 Banish -cost 2 -type Spell -target MinionOrRitual -destroy -desc Destroy_target_minion_or_ritual
 Unsummon -cost 1 -type Spell -target Minion -return -desc Put_target_minion_on_the_bottom_of_its_owner's_deck
-Recharge -cost 1 -type Spell -target MyRitual -addCharge 3 -desc Your_ritual_gains_3_charges
+Recharge -cost 1 -type Spell -target MyRitual -changeCharge 3 -desc Your_ritual_gains_3_charges
 
 Disenchant -cost 1 -type Spell -target MinionEnchantment -destroy -desc Destroy_the_top_enchantment_on_target_minion
 Raise_Dead -cost 1 -type Spell -target TopMyGraveyard -resurrect -desc Resurrect_the_top_minion_in_your_graveyard
-Blizzard -cost 3 -type Spell -target AllMinions -damage 2 -desc Deal_2_damage_to_all_minions
+Blizzard -cost 3 -type Spell -target AllMinions -changeDef -2 -desc Deal_2_damage_to_all_minions
 
 Giant_Strength -cost 1 -type StatsEnchantment -atk 2 -def 2
-Magic_Fatigue -cost 0 -type AbilityEnchantment -target AbilityMinion -addAbilityCost 2 -desc Enchanted_minion's_activated_ability_costs_2_more
+Magic_Fatigue -cost 0 -type AbilityEnchantment -target AbilityMinion -changeAbilityCost 2 -desc Enchanted_minion's_activated_ability_costs_2_more
 Silence -cost 1 -type AbilityEnchantment -target AbilityMinion -disableAbility -desc Enchanted_minion_cannot_use_abilities
 
-Dark_Ritual -cost 0 -type Ritual -chargeCost 1 -phase MyStart -target MyPlayer -addMana 1 -charge 5 -desc At_the_start_of_your_turn,_gain_1_magic
-Aura_of_Power -cost 1 -type Ritual -chargeCost 1 -phase MySummon -target That -addAtk 1 -addDef 1 -charge 4_-desc_Whenever_a_minion_enters_play_under_your_control,_it_gains_+1/+1
+Dark_Ritual -cost 0 -type Ritual -chargeCost 1 -phase MyStart -target MyPlayer -changeMana 1 -charge 5 -desc At_the_start_of_your_turn,_gain_1_magic
+Aura_of_Power -cost 1 -type Ritual -chargeCost 1 -phase MySummon -target That -changeAtk 1 -changeDef 1 -charge 4_-desc_Whenever_a_minion_enters_play_under_your_control,_it_gains_+1/+1
 Standstill -cost 3 -type Ritual -chargeCost 2 -phase Summon -target That -destroy -charge 4 -desc Whenever_a_minion_enters_play,_destroy_it
