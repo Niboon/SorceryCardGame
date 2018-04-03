@@ -35,6 +35,7 @@ Deck::Deck(vector<string> cardNames, vector<string> loader) {
 
 // Shuffles deck of cards
 // Seeds rand using time, cards' address and an optional nonce to minimize synchronised shuffles
+// Seeds rand using time, random address and an optional nonce to minimize synchronised shuffles
 void Deck::shuffleDeck(int nonce) {
   auto randomAddress = vector<int>{1,1,3,4};
   int *pInt = randomAddress.data();
