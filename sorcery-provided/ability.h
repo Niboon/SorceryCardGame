@@ -11,7 +11,7 @@ class Ability {
   protected:
   std::unique_ptr<AbiImpl> pImpl;
   public:
-  void applyEffect(Board board);
+  void applyEffect(Board* board);
   Ability(int cost, std::string desc);
   virtual ~Ability();
 };
