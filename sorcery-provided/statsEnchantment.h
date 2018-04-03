@@ -11,6 +11,8 @@ public:
 
   card_template_t getDraw() const override;
 
+  card_template_t getInspect() const override;
+
   int getAtk() const override;
 
   int getDef() const override;

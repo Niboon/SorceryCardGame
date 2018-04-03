@@ -143,7 +143,7 @@ card_template_t Board::getDraw() {
 
 card_template_t Board::inspect(int player, int slot) {
   if (hasMinion(player, slot))
-    return (getMinion(player, slot))->getDraw();
+    return (getMinion(player, slot))->getInspect();
   else
     return {"Error: There's no minion in that slot!"};
 }

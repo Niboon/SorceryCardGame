@@ -4,10 +4,16 @@ using namespace std;
 
 Creature::Creature(const std::string &name, int cost, int atk, int def, int ability) :
         name{name},
+        orgName{name},
         cost{cost},
+        orgCost{cost},
         atk{atk},
+        orgAtk{atk},
         def{def},
-        ability{ability} {}
+        orgDef{def},
+        ability{ability},
+        orgAbility{ability}
+{}
 
 std::string Creature::getName() const {
   return name;
@@ -25,6 +31,30 @@ int Creature::getDef() const {
   return def;
 }
 
+int Creature::getAbility() const {
+  return ability;
+}
+
+std::string Creature::getOrgName() const {
+  return orgName;
+}
+
+int Creature::getOrgCost() const {
+  return orgCost;
+}
+
+int Creature::getOrgAtk() const {
+  return orgAtk;
+}
+
+int Creature::getOrgDef() const {
+  return orgDef;
+}
+
+int Creature::getOrgAbility() const {
+  return orgAbility;
+}
+
 void Creature::changeAtk(int amount) {
   atk += amount;
 }
@@ -33,14 +63,18 @@ void Creature::changeDef(int amount) {
   def += amount;
 }
 
-int Creature::getAbility() const {
-  return ability;
-}
-
 card_template_t Creature::getDraw() const {
   return display_minion_no_ability(
           getName(),
           getCost(),
           getAtk(),
           getDef());
+}
+
+card_template_t Creature::getInspect() const {
+  return display_minion_no_ability(
+          getOrgName(),
+          getOrgCost(),
+          getOrgAtk(),
+          getOrgDef());
 }

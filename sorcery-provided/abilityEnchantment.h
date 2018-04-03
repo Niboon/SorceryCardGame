@@ -23,6 +23,8 @@ private:
   int atk;
   int def;
   std::unique_ptr<EnchantmentCard> enchantmentCard;
+
+  card_template_t getInspect() const;
 };
 
 

@@ -9,6 +9,10 @@ card_template_t AbilityEnchantment::getDraw() const {
   return card_template_t();
 }
 
+card_template_t AbilityEnchantment::getInspect() const {
+  return card_template_t();
+}
+
 int AbilityEnchantment::getAtk() const {
   return Enchantment::getAtk();
 }

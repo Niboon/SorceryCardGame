@@ -16,13 +16,25 @@ public:
 
   int getDef() const override;
 
+  int getAbility() const override;
+
+  virtual std::string getOrgName() const;
+
+  virtual int getOrgCost() const override;
+
+  virtual int getOrgAtk() const override;
+
+  virtual int getOrgDef() const override;
+
+  virtual int getOrgAbility() const override;
+
   void changeAtk(int amount) override;
 
   void changeDef(int amount) override;
 
-  int getAbility() const override;
-
   card_template_t getDraw() const override;
+
+  card_template_t getInspect() const override;
 
   ~Creature() override = default;
 
@@ -32,6 +44,12 @@ private:
   int atk;
   int def;
   int ability;
+
+  const std::string orgName;
+  const int orgCost;
+  const int orgAtk;
+  const int orgDef;
+  const int orgAbility;
 };
 
 
