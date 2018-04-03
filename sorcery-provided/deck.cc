@@ -38,7 +38,7 @@ Deck::Deck(vector<string> cardNames, vector<string> loader) {
 void Deck::shuffleDeck(int nonce) {
   auto randomAddress = vector<int>{1,1,3,4};
   int *pInt = randomAddress.data();
-  const auto saltFromAddress = reinterpret_cast<long>(pInt); // reinterpret_cast purely to get salt
+  const auto saltFromAddress = reinterpret_cast<size_t>(pInt); // reinterpret_cast purely to get salt
   const auto timeDerived = (2^nonce) * time(nullptr);
   const auto seed = static_cast<unsigned int>(timeDerived ^ saltFromAddress);
   srand(seed);
