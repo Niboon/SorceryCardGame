@@ -2,17 +2,18 @@
 #define ABILITY_H
 
 #include <string>
+#include <memory>
 
+class AbiImpl;
 class Board;
 
 class Ability {
-  std::string description;
-  int cost;
-  Board *board;
+  protected:
+  std::unique_ptr<AbiImpl> pImpl;
   public:
-  virtual void applyEffect() = 0;
+  void applyEffect(Board board);
   Ability(int cost, std::string desc);
   virtual ~Ability();
-}
+};
 
 #endif
