@@ -4,14 +4,14 @@ using namespace std;
 
 Creature::Creature(const std::string &name, int cost, int atk, int def, int ability) :
         name{name},
-        orgName{name},
         cost{cost},
-        orgCost{cost},
         atk{atk},
-        orgAtk{atk},
         def{def},
-        orgDef{def},
         ability{ability},
+        orgName{name},
+        orgCost{cost},
+        orgAtk{atk},
+        orgDef{def},
         orgAbility{ability}
 {}
 

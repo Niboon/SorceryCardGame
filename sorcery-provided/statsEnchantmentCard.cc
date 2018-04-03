@@ -1,4 +1,4 @@
-#include "StatsEnchantmentCard.h"
+#include "statsEnchantmentCard.h"
 
 using namespace std;
 

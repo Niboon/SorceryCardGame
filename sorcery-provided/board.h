@@ -8,8 +8,8 @@
 #include "ritual.h"
 #include "minion.h"
 #include "enchantment.h"
-#include "StatsEnchantmentCard.h"
-#include "AbilityEnchantmentCard.h"
+#include "statsEnchantmentCard.h"
+#include "abilityEnchantmentCard.h"
 #include "player.h"
 #include "creature.h"
 
