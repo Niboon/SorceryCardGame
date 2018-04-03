@@ -51,8 +51,8 @@ public:
 
   void use(int player, int slot, int targetPlayer, int targetSlot);
 
-  void injure(int player, int amount);
-  void injure(int player, int amount, int slot);
+  void changeLife(int player, int amount);
+  void changeDef(int player, int amount, int slot);
 
   void destroy(int player, int slot);
 

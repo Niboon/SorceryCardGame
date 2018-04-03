@@ -32,14 +32,14 @@ void Controller::use(int card, int playerTarget, int cardTarget) {
 }
 
 void Controller::attack(int minion) {
-  board->injure(board->opponent(), board->getMinion(board->whoseTurn(), minion)->getAtk());
+  board->changeLife(board->opponent(), board->getMinion(board->whoseTurn(), minion)->getAtk());
 }
 
 void Controller::attack(int minion, int otherMinion) {
   int minionAtk = board->getMinion(board->whoseTurn(), minion)->getAtk();
   int otherMinionAtk = board->getMinion(board->opponent(), otherMinion)->getAtk();
-  board->injure(board->opponent(), minionAtk, otherMinion);
-  board->injure(board->whoseTurn(), otherMinionAtk, minion);
+  board->changeDef(board->opponent(), minionAtk, otherMinion);
+  board->changeDef(board->whoseTurn(), otherMinionAtk, minion);
 }
 
 void Controller::drawInspect(int minion) {

@@ -94,12 +94,12 @@ void Board::use(int player, int slot, int targetPlayer, int targetSlot) {
 //  minion->getAbility()->applyEffect(targetPlayer, targetSlot, this);
 }
 
-void Board::injure(int player, int amount) {
+void Board::changeLife(int player, int amount) {
   Player *p = getPlayer(player);
   p->changeLife(-amount);
 }
 
-void Board::injure(int player, int amount, int slot) {
+void Board::changeDef(int player, int amount, int slot) {
   unique_ptr<Minion> &minion = getMinion(player, slot);
   vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
   minion->changeDef(-amount);
