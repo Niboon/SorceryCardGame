@@ -51,12 +51,14 @@ int main(int argc, char *argv[]) {
 
   string player1Name = "Player 1";
   string player2Name = "Player 2";
-  for (auto it = init.begin(); it != init.begin() + 2; ++it) {
-    auto i = distance(init.begin(), it);
-    if (i == 0) {
-      player1Name = *it;
-    } else if (i == 1) {
-      player2Name = *it;
+  if (!init.empty()){
+    for (auto it = init.begin(); it != init.begin() + 2; ++it) {
+      auto i = distance(init.begin(), it);
+      if (i == 0) {
+        player1Name = *it;
+      } else if (i == 1) {
+        player2Name = *it;
+      }
     }
   }
 
