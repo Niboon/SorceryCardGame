@@ -64,8 +64,10 @@ int main(int argc, char *argv[]) {
 
   Controller game{deck1, deck2, player1Name, player2Name, cardLoader};
 
-  for (auto it = init.begin() + 2; it != init.end(); ++it) {
-    processLineOfCmd(*it, game);
+  if (!init.empty()) {
+    for (auto it = init.begin() + 2; it != init.end(); ++it) {
+      processLineOfCmd(*it, game);
+    }
   }
 
   cin >> std::ws; // Flush buffer of whitespace
