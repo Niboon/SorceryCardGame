@@ -21,6 +21,8 @@ public:
   std::unique_ptr<Card> popCard();
 
   void pushCard(std::unique_ptr<Card> newCard);
+
+  void insertToBottom(std::unique_ptr<Card> newCard);
 };
 
 void insertPair(std::map<std::string, std::string> &params, const std::string &key, std::stringstream &ss);

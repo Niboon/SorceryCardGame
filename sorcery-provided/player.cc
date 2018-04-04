@@ -23,8 +23,12 @@ bool Player::drawCard() {
   return false;
 }
 
-void Player::changeLife(int offset) {
-  life += offset;
+void Player::changeLife(int amount) {
+  life += amount;
+}
+
+void Player::changeMagic(int amount) {
+  magic += amount;
 }
 
 std::unique_ptr<Card> Player::getCard(int num) {
@@ -33,6 +37,10 @@ std::unique_ptr<Card> Player::getCard(int num) {
 
 card_template_t Player::showHand() const{
   return hand->getDraw();
+}
+
+void Player::insertDeckBottom(std::unique_ptr<Card> &&card) {
+  deck->insertToBottom(move(card));
 }
 
 card_template_t Player::getDraw(int playerNumber) const{

@@ -22,7 +22,7 @@ public:
 
   bool drawCard();
 
-  void changeLife(int offset);
+  void changeLife(int amount);
 
   std::unique_ptr<Card> getCard(int num);
 
@@ -31,6 +31,10 @@ public:
   card_template_t getDraw(int playerNumber) const;
 
   ~Player();
+
+  void insertDeckBottom(std::unique_ptr<Card> &&card);
+
+  void changeMagic(int amount);
 };
 
 #endif
