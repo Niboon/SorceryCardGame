@@ -78,5 +78,10 @@ public:
 std::unique_ptr <Enchantment> doEnchant(std::unique_ptr<Minion> minion,
                                    std::unique_ptr<EnchantmentCard> enchantmentCard);
 
+void insertPlayerRow(unsigned long long int height, card_template_t &ret, const card_template_t &ritualDraw1,
+                     const card_template_t &graveyardDraw1, const card_template_t &playerDraw1);
+
+void insertMinionRow(unsigned long long int height, card_template_t &ret,
+                     std::vector<std::unique_ptr<Minion>> &minions);
 
 #endif

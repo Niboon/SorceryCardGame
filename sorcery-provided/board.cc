@@ -47,13 +47,13 @@ void Board::play(int player, int slot) {
   if (auto creaturePtr = dynamic_cast<Creature*>(card.get())){
     card.release();
     summon(player, move(unique_ptr<Minion>{creaturePtr}));
-  } else if (auto ritualPtr = dynamic_cast<Ritual*>(card.get())){
-    card.release();
-    unique_ptr<Ritual> newRitual{ritualPtr};
-    (player == 1) ? ritual1.swap(newRitual) : ritual2.swap(newRitual);
-  } else if (auto spellPtr = dynamic_cast<Spell*>(card.get())){
-    card.release();
-    unique_ptr<Spell> spell = move(unique_ptr<Spell>(spellPtr));
+//  } else if (auto ritualPtr = dynamic_cast<Ritual*>(card.get())){
+//    card.release();
+//    unique_ptr<Ritual> newRitual{ritualPtr};
+//    (player == 1) ? ritual1.swap(newRitual) : ritual2.swap(newRitual);
+//  } else if (auto spellPtr = dynamic_cast<Spell*>(card.get())){
+//    card.release();
+//    unique_ptr<Spell> spell = move(unique_ptr<Spell>(spellPtr));
 //    spell->getAbility()->applyEffect(this);
   }
 }
@@ -67,15 +67,15 @@ void Board::play(int player, int slot, int targetPlayer, int targetSlot) {
             targetSlot,
             move(unique_ptr<EnchantmentCard>{statsEnchantmentCardPtr})
     );
-  } else if (auto abilityEnchantmentCardPtr = dynamic_cast<AbilityEnchantmentCard*>(card.get())){
-    card.release();
-    enchant(targetPlayer,
-            targetSlot,
-            move(unique_ptr<EnchantmentCard>{abilityEnchantmentCardPtr})
-    );
-  } else if (auto spellPtr = dynamic_cast<Spell*>(card.get())){
-    card.release();
-    unique_ptr<Spell> spell = move(unique_ptr<Spell>(spellPtr));
+//  } else if (auto abilityEnchantmentCardPtr = dynamic_cast<AbilityEnchantmentCard*>(card.get())){
+//    card.release();
+//    enchant(targetPlayer,
+//            targetSlot,
+//            move(unique_ptr<EnchantmentCard>{abilityEnchantmentCardPtr})
+//    );
+//  } else if (auto spellPtr = dynamic_cast<Spell*>(card.get())){
+//    card.release();
+//    unique_ptr<Spell> spell = move(unique_ptr<Spell>(spellPtr));
 //    spell->getAbility()->applyEffect(targetPlayer, targetSlot, this);
   }
 }
@@ -142,7 +142,41 @@ card_template_t Board::showHand(int player) {
 }
 
 card_template_t Board::getDraw() {
-  return CENTRE_GRAPHIC;
+  const card_template_t &centre = CENTRE_GRAPHIC;
+  unsigned long long int height = CARD_TEMPLATE_BORDER.size();
+  string topBorder (165, EXTERNAL_BORDER_CHAR_LEFT_RIGHT.at(0));
+  topBorder = EXTERNAL_BORDER_CHAR_TOP_LEFT + topBorder + EXTERNAL_BORDER_CHAR_TOP_RIGHT;
+  string bottomBorder (165, EXTERNAL_BORDER_CHAR_LEFT_RIGHT.at(0));
+  bottomBorder = EXTERNAL_BORDER_CHAR_BOTTOM_LEFT + bottomBorder + EXTERNAL_BORDER_CHAR_BOTTOM_RIGHT;
+  card_template_t ret;
+  ret.emplace_back(topBorder);
+  const card_template_t ritualDraw1 =
+          (ritual1.get())
+          ? ritual1->getDraw()
+          : CARD_TEMPLATE_BORDER;
+  const card_template_t graveyardDraw1 =
+          (!graveyard1.empty())
+          ? graveyard1.back()->getDraw()
+          : CARD_TEMPLATE_BORDER;
+  const card_template_t ritualDraw2 =
+          (ritual2.get())
+          ? ritual2->getDraw()
+          : CARD_TEMPLATE_BORDER;
+  const card_template_t graveyardDraw2 =
+          (!graveyard2.empty())
+          ? graveyard2.back()->getDraw()
+          : CARD_TEMPLATE_BORDER;
+  const card_template_t playerDraw1 = p1->getDraw(1);
+  const card_template_t playerDraw2 = p2->getDraw(2);
+  insertPlayerRow(height, ret, ritualDraw1, graveyardDraw1, playerDraw1);
+  insertMinionRow(height, ret, minions1);
+  for (const auto &line : centre) {
+    ret.emplace_back(line);
+  }
+  insertMinionRow(height, ret, minions2);
+  insertPlayerRow(height, ret, ritualDraw2, graveyardDraw2, playerDraw2);
+  ret.emplace_back(bottomBorder);
+  return ret;
 }
 
 card_template_t Board::inspect(int player, int slot) {
@@ -175,5 +209,37 @@ unique_ptr<Enchantment> doEnchant(unique_ptr<Minion> minion,
   } else {
     return move(make_unique<StatsEnchantment>(move(minion), 
                                               move(enchantmentCard)));
+  }
+}
+
+void insertPlayerRow(unsigned long long int height, card_template_t &ret,
+                     const card_template_t &ritualDraw1, const card_template_t &graveyardDraw1,
+                     const card_template_t &playerDraw1) {
+  for (int i=0; i < height; ++i) {
+    string newLine = EXTERNAL_BORDER_CHAR_UP_DOWN;
+    newLine += ritualDraw1.at(i);
+    newLine += CARD_TEMPLATE_EMPTY.at(i);
+    newLine += playerDraw1.at(i);
+    newLine += CARD_TEMPLATE_EMPTY.at(i);
+    newLine += graveyardDraw1.at(i);
+    newLine += EXTERNAL_BORDER_CHAR_UP_DOWN;
+    ret.emplace_back(newLine);
+  }
+}
+
+void insertMinionRow(unsigned long long int height, card_template_t &ret,
+                     vector<unique_ptr<Minion>> &minions) {
+  for (int i=0; i < height; ++i) {
+    string newLine = EXTERNAL_BORDER_CHAR_UP_DOWN;
+    for (int j=0; j < 5; ++j) {
+      if (j < minions.size()) {
+        const card_template_t &minion = minions[j]->getDraw();
+        newLine += minion.at(i);
+      } else {
+        newLine += CARD_TEMPLATE_BORDER.at(i);
+      }
+    }
+    newLine += EXTERNAL_BORDER_CHAR_UP_DOWN;
+    ret.emplace_back(newLine);
   }
 }

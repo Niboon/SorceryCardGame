@@ -1,5 +1,5 @@
-#include <iostream>
 #include "controller.h"
+#include "display.h"
 
 using namespace std;
 
@@ -13,26 +13,27 @@ Controller::Controller( vector<string> deck1,
 
 void Controller::play(int card) {
   board->play(board->whoseTurn(), card);
-  cout << "play " << card << endl;
+  drawBoard();
 }
 
 void Controller::play(int card, int playerTarget, int cardTarget) {
   board->play(board->whoseTurn(), card, playerTarget, cardTarget);
-  cout << "play " << card << " " << playerTarget << " " << cardTarget << endl;
+  drawBoard();
 }
 
 void Controller::use(int card) {
   board->use(board->whoseTurn(), card);
-  cout << "use " << card;
+  drawBoard();
 }
 
 void Controller::use(int card, int playerTarget, int cardTarget) {
   board->use(board->whoseTurn(), card, playerTarget, cardTarget);
-  cout << "use " << card << " " << playerTarget << " " << cardTarget << endl;
+  drawBoard();
 }
 
 void Controller::attack(int minion) {
   board->changeLife(board->opponent(), board->getMinion(board->whoseTurn(), minion)->getAtk());
+  drawBoard();
 }
 
 void Controller::attack(int minion, int otherMinion) {
@@ -40,33 +41,25 @@ void Controller::attack(int minion, int otherMinion) {
   int otherMinionAtk = board->getMinion(board->opponent(), otherMinion)->getAtk();
   board->changeDef(board->opponent(), minionAtk, otherMinion);
   board->changeDef(board->whoseTurn(), otherMinionAtk, minion);
+  drawBoard();
 }
 
 void Controller::drawInspect(int minion) {
-  cout << "inspect " << minion << endl;
   card_template_t lines = board->inspect(board->whoseTurn(), minion);
-  for (const auto &line: lines) {
-    cout << line << endl;
-  }
-
+  draw(lines);
 }
 
 void Controller::drawHand() {
   const card_template_t &lines = board->showHand(board->whoseTurn());
-  for (const auto &line: lines) {
-    cout << line << endl;
-  }
+  draw(lines);
 }
 
 void Controller::drawBoard() {
-  board->getDraw();
-  cout << "board " << endl;
-
+  const card_template_t &lines = board->getDraw();
+  draw(lines);
 }
 
 void Controller::nextTurn() {
   board->endTurn();
   board->drawCard(board->whoseTurn());
-  cout << "end " << endl;
-
 }
