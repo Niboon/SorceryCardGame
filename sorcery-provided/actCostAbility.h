@@ -8,7 +8,7 @@ class ActCostAbility : public abilityImpl{
   int slot;
   int costMod;
   public:
-  void activate(Board) override;
+  void activate(Board *board) override;
   void changeCost(int newCost);
   void changeTarget(int player, int slot);
   ActCostAbility(std::string description, int cost, int player, int slot, 

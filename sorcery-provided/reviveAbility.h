@@ -6,7 +6,7 @@
 class ReviveAbility : public abilityImpl{
   int player;
   public:
-  void activate(Board) override;
+  void activate(Board *board) override;
   ReviveAbility(std::string description, int cost, int player);
 }
 
