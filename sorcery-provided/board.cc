@@ -94,18 +94,6 @@ void Board::use(int player, int slot, int targetPlayer, int targetSlot) {
 //  minion->getAbility()->applyEffect(targetPlayer, targetSlot, this);
 }
 
-void Board::changeLife(int player, int amount) {
-  Player *p = getPlayer(player);
-  p->changeLife(-amount);
-}
-
-void Board::changeDef(int player, int amount, int slot) {
-  unique_ptr<Minion> &minion = getMinion(player, slot);
-  vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
-  minion->changeDef(-amount);
-  if (minion->getDef() <= 0) destroy(player, slot);
-}
-
 void Board::destroy(int player, int slot) {
   vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
   unique_ptr<Minion> minion = move(minions.at(slot - 1));
@@ -188,9 +176,6 @@ card_template_t Board::inspect(int player, int slot) {
 
 bool Board::hasMinion(int player, int slot) { return refPlayerMinions(player).size() >= slot; }
 
-Board::~Board() {
-
-}
 
 Player *Board::getPlayer(int player) {
   return (player == 1) ? p1.get() : p2.get();
@@ -199,6 +184,85 @@ Player *Board::getPlayer(int player) {
 vector<unique_ptr<Minion>> &Board::refPlayerMinions(int player) {
   vector<unique_ptr<Minion>> &minions = (player == 1) ? minions1 : minions2;
   return minions;
+}
+
+void Board::changeLife(int player, int amount) {
+  Player *p = getPlayer(player);
+  p->changeLife(-amount);
+}
+void Board::changeAtk(int player, int amount, int slot) {
+  unique_ptr<Minion> &minion = getMinion(player, slot);
+  minion->changeAtk(amount);
+}
+
+// changeAtk all of given player's minions
+void Board::changeAtk(int player, int amount) {
+  for (int slot=1; slot<=getMinionCount(player); ++slot) {
+    changeAtk(player, amount, slot);
+  }
+}
+
+// changeAtk all minions
+void Board::changeAtk(int amount) {
+  changeAtk(1, amount);
+  changeAtk(2, amount);
+}
+
+void Board::changeDef(int player, int amount, int slot) {
+  unique_ptr<Minion> &minion = getMinion(player, slot);
+  minion->changeDef(amount);
+  if (minion->getDef() <= 0) destroy(player, slot);
+}
+
+// changeDef all minions of given player
+void Board::changeDef(int player, int amount) {
+  for (int slot=1; slot<=getMinionCount(player); ++slot) {
+    changeDef(player, amount, slot);
+  }
+}
+
+// changeDef all minions
+void Board::changeDef(int amount) {
+  changeDef(1, amount);
+  changeDef(2, amount);
+}
+
+void Board::returnToDeck(int player, int slot) {
+  vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
+  unique_ptr<Minion> minion = move(minions.at(slot - 1));
+  unique_ptr<Minion> returnedMinion = minion->destroy();
+  minions.erase(minions.begin() + (slot - 1));
+  Player *p = getPlayer(player);
+  p->insertDeckBottom(move(returnedMinion));
+}
+
+void Board::resurrect(int player) {
+  vector<unique_ptr<Minion>> &graveyard = (player == 1) ? graveyard1 : graveyard2;
+  unique_ptr<Minion> rMinion = move(graveyard.back());
+  graveyard.pop_back();
+  vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
+  minions.emplace_back(rMinion);
+}
+
+void Board::destroyEnchantment(int player, int slot) {
+}
+
+void Board::changeMagic(int player, int amount) {
+  Player *p = getPlayer(player);
+  p->changeMagic(amount);
+}
+
+void Board::specialSummon(int i, std::string name, int count) {
+
+}
+
+void Board::changeCharge(int player, int amount) {
+  Ritual *ritual = (player == 1) ? ritual1.get() : ritual2.get();
+  ritual->changeCharge(amount);
+}
+
+Board::~Board() {
+
 }
 
 unique_ptr<Enchantment> doEnchant(unique_ptr<Minion> minion,

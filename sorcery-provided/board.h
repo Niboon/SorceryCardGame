@@ -54,7 +54,6 @@ public:
   void use(int player, int slot, int targetPlayer, int targetSlot);
 
   void changeLife(int player, int amount);
-  void changeDef(int player, int amount, int slot);
 
   void destroy(int player, int slot);
 
@@ -73,6 +72,30 @@ public:
   ~Board();
 
   bool hasMinion(int player, int slot);
+
+  void returnToDeck(int player, int slot);
+
+  void destroyEnchantment(int player, int slot);
+
+  void changeDef(int player);
+
+  void changeDef(int player, int amount);
+
+  void changeDef(int player, int amount, int slot);
+
+  void changeAtk(int player);
+
+  void changeAtk(int player, int amount);
+
+  void changeAtk(int player, int amount, int slot);
+
+  void changeMagic(int player, int amount);
+
+  void specialSummon(int i, std::string name, int count);
+
+  void changeCharge(int player, int amount);
+
+  void resurrect(int player);
 };
 
 std::unique_ptr <Enchantment> doEnchant(std::unique_ptr<Minion> minion,
