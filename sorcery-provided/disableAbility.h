@@ -1,15 +1,13 @@
 #ifndef DISABLEABILITY_H
 #define DISABLEABILITY_H
 
-#include "abilityImpl.h"
+#include "ability.h"
 
-class DisableAbility : public abilityImpl{
+struct DisableAbility : public Ability::AbilityType{
   int player;
   int slot;
-  public:
   void activate(Board *board) override;
-  void changeTarget(int player, int slot);
-  DisableAbility(std::string description, int cost, int player, int slot);
+  DisableAbility(int player, int slot);
 }
 
 #endif

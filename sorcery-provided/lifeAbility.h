@@ -1,15 +1,13 @@
 #ifndef LIFEABILITY_H
 #define LIFEABILITY_H
 
-#include "abilityImpl.h"
+#include "ability.h"
 
-class LifeAbility : public abilityImpl {
+struct LifeAbility : public Ability::AbilityType {
   int amount;
   int player;
-  public:
   void activate(Board *board) override;
-  void newAmount(int amount);
-  ChangeAbility(std::string description, int cost, int amount, int player);
+  ChangeAbility(int amount, int player);
 };
 
 #endif

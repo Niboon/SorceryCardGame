@@ -4,8 +4,16 @@
 
 using namespace std;
 
-Ability(string abilityText){ }
+Ability::Ability(string abilityText){ }
 
-void applyEffect(Board* board){
-  pImpl->activate(board);
+void Ability::applyEffect(Board* board){
+  type->activate(board);
+}
+
+string Ability::getDesc(){
+    return description;
+}
+
+int Ability::getCost(){
+    return cost;
 }

@@ -1,13 +1,12 @@
 #ifndef REVIVEABILITY_H
 #define REVIVEABILITY_H
 
-#include "abilityImpl.h"
+#include "ability.h"
 
-class ReviveAbility : public abilityImpl{
+struct ReviveAbility : public Ability::AbilityType{
   int player;
-  public:
   void activate(Board *board) override;
-  ReviveAbility(std::string description, int cost, int player);
+  ReviveAbility(int player);
 }
 
 #endif

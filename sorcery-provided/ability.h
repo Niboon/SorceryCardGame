@@ -4,12 +4,19 @@
 #include <string>
 #include <memory>
 
-class AbiImpl;
 class Board;
 
 class Ability {
-  std::unique_ptr<AbiImpl> pImpl;
+  struct AbilityType{
+    virtual activate(Board *board) = 0;
+    virtual ~AbilityType() = default;
+  }
+  std::unique_ptr<AbilityType> type;
+  std::string description;
+  int cost;
   public:
+  std::string getDesc();
+  int getCost();
   void applyEffect(Board* board);
   Ability(std::string abilityText);
   virtual ~Ability() = default;

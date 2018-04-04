@@ -1,16 +1,13 @@
 #ifndef MANAABILITY_H
 #define MANAABILITY_H
 
-#include "abilityImpl.h"
+#include "ability.h"
 
-class ManaAbility : public abilityImpl{
+struct ManaAbility : public Ability::AbilityType{
   int player;
   int manaBonus;
-  public:
   void activate(Board *board) override;
-  void changeMana(int mana);
-  void changeTarget(int player);
-  ManaAbility(std::string description, int cost, int player, int mana);
+  ManaAbility(int player, int mana);
 }
 
 #endif
