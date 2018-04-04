@@ -2,6 +2,7 @@
 #define CREATURE_H
 
 #include <string>
+#include <memory>
 #include "minion.h"
 
 class Creature : public Minion {
@@ -31,6 +32,8 @@ public:
   void changeAtk(int amount) override;
 
   void changeDef(int amount) override;
+
+  std::unique_ptr<Minion> destroy() override;
 
   card_template_t getDraw() const override;
 

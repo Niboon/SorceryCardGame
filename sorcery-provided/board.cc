@@ -109,10 +109,10 @@ void Board::changeDef(int player, int amount, int slot) {
 void Board::destroy(int player, int slot) {
   vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
   unique_ptr<Minion> minion = move(minions.at(slot - 1));
-//  minion->destroy();
+  unique_ptr<Minion> deadMinion = minion->destroy();
   minions.erase(minions.begin() + (slot - 1));
   vector<unique_ptr<Minion>> &graveyard = (player == 1) ? graveyard1 : graveyard2;
-  graveyard.emplace_back(minion.get());
+  graveyard.emplace_back(move(deadMinion));
 }
 
 void Board::enchant(int player, int minion, unique_ptr<EnchantmentCard> enchantmentCard) {

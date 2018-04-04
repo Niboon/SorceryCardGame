@@ -31,6 +31,8 @@ public:
 
   virtual void changeDef(int amount) = 0;
 
+  virtual std::unique_ptr<Minion> destroy() = 0;
+
   virtual card_template_t getDraw() const = 0;
 
   virtual card_template_t getInspect() const = 0;
