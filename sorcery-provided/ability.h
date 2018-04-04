@@ -8,12 +8,11 @@ class AbiImpl;
 class Board;
 
 class Ability {
-  protected:
   std::unique_ptr<AbiImpl> pImpl;
   public:
   void applyEffect(Board* board);
-  Ability(int cost, std::string desc);
-  virtual ~Ability();
+  Ability(std::string abilityText);
+  virtual ~Ability() = default;
 };
 
 #endif

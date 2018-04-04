@@ -8,13 +8,12 @@ class ChangeAbility : public abilityImpl {
   int player;
   int slot;
   bool allMinions;
-  bool bothPlayers;
   public:
   void activate(Board *board) override;
-  void newTarget(int player, int slot; bool allMinions, bool bothPlayers);
-  void newDamage(int amount);
+  void newTarget(int player, int slot; bool allMinions);
+  void newAmount(int amount);
   ChangeAbility(std::string description, int cost, int amount, int player, 
-                int slot, bool allMinions, bool bothPlayers);
+                int slot, bool allMinions);
 };
 
 #endif
