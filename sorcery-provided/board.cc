@@ -124,6 +124,10 @@ unique_ptr<Minion> &Board::getMinion(int player, int slot) {
   return refPlayerMinions(player).at(slot - 1);
 }
 
+int Board::getMinionCount(int player) {
+  return static_cast<int>(refPlayerMinions(player).size());
+}
+
 void Board::summon(int player, unique_ptr<Minion> creature) {
   vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
   minions.emplace_back(move(creature));

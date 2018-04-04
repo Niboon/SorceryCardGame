@@ -41,6 +41,8 @@ public:
 
   std::unique_ptr<Minion> &getMinion(int player, int slot);
 
+  int getMinionCount(int player);
+
   void drawCard(int player);
 
   void play(int player, int slot);
