@@ -1,7 +1,9 @@
 #include "enchantment.h"
 
-Enchantment::Enchantment(std::unique_ptr<Minion> minion) :
-        minion{std::move(minion)},
+using namespace std;
+
+Enchantment::Enchantment(unique_ptr<Minion> minion) :
+        minion{move(minion)},
         orgName{this->minion->getOrgName()},
         orgCost{this->minion->getOrgCost()},
         orgAtk{this->minion->getOrgAtk()},
@@ -9,7 +11,7 @@ Enchantment::Enchantment(std::unique_ptr<Minion> minion) :
         orgAbility{this->minion->getOrgAbility()}
 {}
 
-std::string Enchantment::getName() const {
+string Enchantment::getName() const {
   return minion->getName();
 }
 
@@ -29,7 +31,7 @@ int Enchantment::getAbility() const {
   return minion->getAbility();
 }
 
-std::string Enchantment::getOrgName() const {
+string Enchantment::getOrgName() const {
   return orgName;
 }
 
@@ -55,6 +57,18 @@ void Enchantment::changeAtk(int amount) {
 
 void Enchantment::changeDef(int amount) {
   minion->changeDef(amount);
+}
+
+unique_ptr<Minion> Enchantment::destroy() {
+  minion->changeAtk(orgAtk);
+  minion->changeDef(orgDef);
+  return move(minion->destroy());
+}
+
+unique_ptr<Minion> Enchantment::removeTop() {
+  minion->changeAtk(orgAtk);
+  minion->changeDef(orgDef);
+  return move(minion);
 }
 
 card_template_t Enchantment::getDraw() const {

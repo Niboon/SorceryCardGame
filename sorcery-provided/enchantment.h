@@ -34,6 +34,10 @@ public:
 
   virtual void changeDef(int amount);
 
+  virtual std::unique_ptr<Minion> destroy();
+
+  virtual std::unique_ptr<Minion> removeTop();
+
   virtual card_template_t getDraw() const;
 
   virtual card_template_t getInspect() const;

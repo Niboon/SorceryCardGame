@@ -245,6 +245,10 @@ void Board::resurrect(int player) {
 }
 
 void Board::destroyEnchantment(int player, int slot) {
+  unique_ptr<Minion> &minion = getMinion(player, slot);
+  unique_ptr<Minion> replacement = minion->removeTop();
+  vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
+  minion.swap(replacement);
 }
 
 void Board::changeMagic(int player, int amount) {

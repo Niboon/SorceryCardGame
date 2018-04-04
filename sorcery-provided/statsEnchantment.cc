@@ -60,6 +60,10 @@ unique_ptr<Minion> StatsEnchantment::destroy() {
   return Enchantment::destroy();
 }
 
+unique_ptr<Minion> StatsEnchantment::removeTop() {
+  return Enchantment::removeTop();
+}
+
 StatsEnchantment::~StatsEnchantment() = default;
 
 

@@ -35,6 +35,8 @@ public:
 
   std::unique_ptr<Minion> destroy() override;
 
+  std::unique_ptr<Minion> removeTop() override;
+
   card_template_t getDraw() const override;
 
   card_template_t getInspect() const override;

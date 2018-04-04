@@ -67,6 +67,10 @@ std::unique_ptr<Minion> Creature::destroy() {
   return move(make_unique<Creature>(orgName, orgCost,orgAtk,orgDef, orgAbility));
 }
 
+std::unique_ptr<Minion> Creature::removeTop() {
+  return move(make_unique<Creature>(orgName, orgCost,orgAtk,orgDef, orgAbility));
+}
+
 card_template_t Creature::getDraw() const {
   return display_minion_no_ability(
           getName(),

@@ -1,7 +1,9 @@
 #include "abilityEnchantment.h"
 
-AbilityEnchantment::AbilityEnchantment(std::unique_ptr<Minion> minion,
-                                       std::unique_ptr<EnchantmentCard> enchantmentCard) :
+using namespace std;
+
+AbilityEnchantment::AbilityEnchantment(unique_ptr<Minion> minion,
+                                       unique_ptr<EnchantmentCard> enchantmentCard) :
         Enchantment{move(minion)},enchantmentCard{move(enchantmentCard)}
 {}
 
@@ -23,6 +25,14 @@ int AbilityEnchantment::getDef() const {
 
 int AbilityEnchantment::getAbility() const {
   return enchantmentCard->getAbility();
+}
+
+unique_ptr<Minion> AbilityEnchantment::destroy() {
+  return Enchantment::destroy();
+}
+
+unique_ptr<Minion> AbilityEnchantment::removeTop() {
+  return Enchantment::removeTop();
 }
 
 AbilityEnchantment::~AbilityEnchantment() = default;

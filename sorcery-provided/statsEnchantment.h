@@ -19,6 +19,8 @@ public:
 
   std::unique_ptr<Minion> destroy() override;
 
+  std::unique_ptr<Minion> removeTop() override;
+
   int getAbility() const override;
 
   ~StatsEnchantment() override;
