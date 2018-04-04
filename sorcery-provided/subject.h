@@ -2,8 +2,10 @@
 #define SUBJECT_H
 
 #include <vector>
-#include "triggerObserver.h"
+//#include "triggerObserver.h"
 #include "phase.h"
+
+class TriggerObserver;
 
 class Subject {
 public:
