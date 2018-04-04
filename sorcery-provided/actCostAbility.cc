@@ -5,7 +5,7 @@
 using namespace std;
 
 void ActCostAbility::activate(Board *board) override{
-  board
+  board->abilityChangeCost(player, slot, costMod);
 }
 
 void ActCostAbility::changeCost(int newCost){
