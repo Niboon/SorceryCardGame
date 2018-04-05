@@ -2,10 +2,10 @@
 
 using namespace std;
 
-AbilityEnchantmentCard::AbilityEnchantmentCard(const string &name, int cost, int ability):
+AbilityEnchantmentCard::AbilityEnchantmentCard(const string &name, int cost, unique_ptr<Ability> ability):
         name{name},
         cost{cost},
-        ability{ability}
+        ability{move(ability)}
 {}
 
 string AbilityEnchantmentCard::getName() const {
@@ -24,8 +24,8 @@ int AbilityEnchantmentCard::getDef() const {
   return 0;
 }
 
-int AbilityEnchantmentCard::getAbility() const {
-  return 0;
+Ability * AbilityEnchantmentCard::getAbility() const {
+  return ability.get();
 }
 
 card_template_t AbilityEnchantmentCard::getDraw() const {

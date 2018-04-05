@@ -1,7 +1,6 @@
 #include "board.h"
 #include "statsEnchantment.h"
 #include "abilityEnchantment.h"
-#include "creature.h"
 #include "spell.h"
 
 using namespace std;
@@ -10,22 +9,41 @@ Board::Board(vector<string> deck1,
              vector<string> deck2,
              string name1,
              string name2,
-             vector<string> loader) :
-        p1{make_unique<Player>(name1, deck1, loader)},
-        p2{make_unique<Player>(name2, deck2, loader)},
+             vector<string> loader,
+             bool testing) :
+        p1{make_unique<Player>(name1, deck1, loader, testing)},
+        p2{make_unique<Player>(name2, deck2, loader, testing)},
         activePlayer{1}
 {}
 
 void Board::attach(int player, TriggerObserver *observer) {
-
+  vector<TriggerObserver *> &observers = (player == 1) ? observersPlayer1 : observersPlayer2;
+  observers.emplace_back(observer);
 }
 
 void Board::detach(int player, TriggerObserver *observer) {
-
+  vector<TriggerObserver *> &observers = (player == 1) ? observersPlayer1 : observersPlayer2;
+  for (auto it=observers.begin();it != observers.end();++it) {
+    if (*it==observer) observers.erase(it);
+  }
 }
 
 void Board::notify(bool isYourTurn, Phase phase) {
-
+//  if (activePlayer==1) {
+//    for (auto ob: observersPlayer1) {
+//      ob->trigger(isYourTurn, phase, this);
+//    }
+//    for (auto ob: observersPlayer2) {
+//      ob->trigger(!isYourTurn, phase, this);
+//    }
+//  } else {
+//    for (auto ob: observersPlayer1) {
+//      ob->trigger(!isYourTurn, phase, this);
+//    }
+//    for (auto ob: observersPlayer2) {
+//      ob->trigger(isYourTurn, phase, this);
+//    }
+//  }
 }
 
 int Board::whoseTurn() {
@@ -43,55 +61,90 @@ void Board::drawCard(int player) {
 
 void Board::play(int player, int slot) {
   Player *p = getPlayer(player);
-  unique_ptr<Card> card = p->getCard(slot);
-  if (auto creaturePtr = dynamic_cast<Creature*>(card.get())){
-    card.release();
-    summon(player, move(unique_ptr<Minion>{creaturePtr}));
+
+  if (p->hasEnoughMagic(slot)) {
+    unique_ptr<Card> card = p->getCard(slot);
+    if (auto creaturePtr = dynamic_cast<Creature *>(card.get())) {
+      card.release();
+      if (tryUseCost(player, creaturePtr->getCost())) {
+        summon(player, move(unique_ptr<Minion>{creaturePtr}));
+      }
+    } else if (auto spellPtr = dynamic_cast<Spell *>(card.get())) {
+      card.release();
+      if (tryUseCost(player, spellPtr->getAbility()->getCost())) {
+        unique_ptr<Spell> spell = move(unique_ptr<Spell>(spellPtr));
+        spell->getAbility()->applyEffect(this);
+      }
+    }
 //  } else if (auto ritualPtr = dynamic_cast<Ritual*>(card.get())){
 //    card.release();
 //    unique_ptr<Ritual> newRitual{ritualPtr};
-//    (player == 1) ? ritual1.swap(newRitual) : ritual2.swap(newRitual);
-//  } else if (auto spellPtr = dynamic_cast<Spell*>(card.get())){
-//    card.release();
-//    unique_ptr<Spell> spell = move(unique_ptr<Spell>(spellPtr));
-//    spell->getAbility()->applyEffect(this);
+//    if (player == 1) {
+//      if (ritual1) {
+//        ritual1 = move(newRitual);
+//      } else {
+//        detach(player,ritual1->getTriggerAbility()->getObserver().get());
+//        ritual1.swap(newRitual);
+//      }
+//      attach(player,ritual1->getTriggerAbility()->getObserver().get());
+//    } else {
+//      if (ritual2) {
+//        ritual2 = move(newRitual);
+//      } else {
+//        detach(player,ritual2->getTriggerAbility()->getObserver().get());
+//        ritual2.swap(newRitual);
+//      }
+//      attach(player,ritual2->getTriggerAbility()->getObserver().get());
+//    }
   }
 }
 
 void Board::play(int player, int slot, int targetPlayer, int targetSlot) {
   Player *p = getPlayer(player);
-  unique_ptr<Card> card = p->getCard(slot);
-  if (auto statsEnchantmentCardPtr = dynamic_cast<StatsEnchantmentCard*>(card.get())){
-    card.release();
-    enchant(targetPlayer,
-            targetSlot,
-            move(unique_ptr<EnchantmentCard>{statsEnchantmentCardPtr})
-    );
-//  } else if (auto abilityEnchantmentCardPtr = dynamic_cast<AbilityEnchantmentCard*>(card.get())){
-//    card.release();
-//    enchant(targetPlayer,
-//            targetSlot,
-//            move(unique_ptr<EnchantmentCard>{abilityEnchantmentCardPtr})
-//    );
-//  } else if (auto spellPtr = dynamic_cast<Spell*>(card.get())){
-//    card.release();
-//    unique_ptr<Spell> spell = move(unique_ptr<Spell>(spellPtr));
-//    spell->getAbility()->applyEffect(targetPlayer, targetSlot, this);
+  if (p->hasEnoughMagic(slot)) {
+    unique_ptr<Card> card = p->getCard(slot);
+    if (auto statsEnchantmentCardPtr = dynamic_cast<StatsEnchantmentCard*>(card.get())){
+      card.release();
+      enchant(targetPlayer,
+              targetSlot,
+              move(unique_ptr<EnchantmentCard>{statsEnchantmentCardPtr})
+      );
+    } else if (auto abilityEnchantmentCardPtr = dynamic_cast<AbilityEnchantmentCard*>(card.get())){
+      card.release();
+      enchant(targetPlayer,
+              targetSlot,
+              move(unique_ptr<EnchantmentCard>{abilityEnchantmentCardPtr})
+      );
+    } else if (auto spellPtr = dynamic_cast<Spell*>(card.get())){
+      card.release();
+      if (tryUseCost(player, spellPtr->getAbility()->getCost())) {
+        unique_ptr<Spell> spell = move(unique_ptr<Spell>(spellPtr));
+        spell->getAbility()->applyEffect(this, targetPlayer, targetSlot);
+      }
+    }
   }
 }
 
 void Board::use(int player, int slot) {
-  if (!hasMinion(player, slot))
+  if (!hasMinion(player, slot) || !hasAction(player,slot))
     return;
   unique_ptr<Minion> &minion = getMinion(player, slot);
-//  minion->getAbility()->applyEffect(this);
+  if (tryUseCost(player, minion->getAbility()->getCost())) {
+    minion->getAbility()->applyEffect(this);
+    setAction(player,slot,false);
+  }
+}
+
+bool Board::tryUseCost(int player, int cost) {
+  return getPlayer(player)->changeMagic(-cost);
 }
 
 void Board::use(int player, int slot, int targetPlayer, int targetSlot) {
-  if (!hasMinion(player, slot))
+  if (!hasMinion(player, slot) || !hasAction(player,slot))
     return;
   unique_ptr<Minion> &minion = getMinion(player, slot);
-//  minion->getAbility()->applyEffect(targetPlayer, targetSlot, this);
+  minion->getAbility()->applyEffect(this, targetPlayer, targetSlot);
+  setAction(player,slot,false);
 }
 
 void Board::destroy(int player, int slot) {
@@ -101,6 +154,8 @@ void Board::destroy(int player, int slot) {
   minions.erase(minions.begin() + (slot - 1));
   vector<unique_ptr<Minion>> &graveyard = (player == 1) ? graveyard1 : graveyard2;
   graveyard.emplace_back(move(deadMinion));
+  vector<bool> &actions = refMinionActs(player);
+  actions.erase(actions.begin() + (slot - 1));
 }
 
 void Board::enchant(int player, int minion, unique_ptr<EnchantmentCard> enchantmentCard) {
@@ -119,10 +174,17 @@ int Board::getMinionCount(int player) {
 void Board::summon(int player, unique_ptr<Minion> creature) {
   vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
   minions.emplace_back(move(creature));
+  vector<bool> &actions = refMinionActs(player);
+  actions.emplace_back(true);
 }
 
 void Board::endTurn() {
   activePlayer = opponent();
+}
+
+void Board::startTurn() {
+  drawCard(activePlayer);
+  changeMagic(activePlayer,1);
 }
 
 card_template_t Board::showHand(int player) {
@@ -139,17 +201,17 @@ card_template_t Board::getDraw() {
   card_template_t ret;
   ret.emplace_back(topBorder);
   const card_template_t ritualDraw1 =
-          (ritual1.get())
-          ? ritual1->getDraw()
-          : CARD_TEMPLATE_BORDER;
+//          (ritual1.get())
+//          ? ritual1->getDraw() :
+          CARD_TEMPLATE_BORDER;
   const card_template_t graveyardDraw1 =
           (!graveyard1.empty())
           ? graveyard1.back()->getDraw()
           : CARD_TEMPLATE_BORDER;
   const card_template_t ritualDraw2 =
-          (ritual2.get())
-          ? ritual2->getDraw()
-          : CARD_TEMPLATE_BORDER;
+//          (ritual2.get())
+//          ? ritual2->getDraw() :
+           CARD_TEMPLATE_BORDER;
   const card_template_t graveyardDraw2 =
           (!graveyard2.empty())
           ? graveyard2.back()->getDraw()
@@ -176,6 +238,17 @@ card_template_t Board::inspect(int player, int slot) {
 
 bool Board::hasMinion(int player, int slot) { return refPlayerMinions(player).size() >= slot; }
 
+bool Board::hasAction(int player, int slot) {
+  vector<bool> &actions = refMinionActs(player);
+  return (slot <= actions.size()) ? actions.at(slot-1) : false;
+}
+
+void Board::setAction(int player, int slot, bool val) {
+  vector<bool> &actions = (player == 1) ? minionsAct1 : minionsAct2;
+  if (slot <= actions.size()) {
+    actions.at(slot-1) = val;
+  }
+}
 
 Player *Board::getPlayer(int player) {
   return (player == 1) ? p1.get() : p2.get();
@@ -186,10 +259,21 @@ vector<unique_ptr<Minion>> &Board::refPlayerMinions(int player) {
   return minions;
 }
 
+vector<bool> &Board::refMinionActs(int player) {
+  vector<bool> &actions = (player == 1) ? minionsAct1 : minionsAct2;
+  return actions;
+}
+
+void Board::discard(int player, int card) {
+  Player *p = getPlayer(player);
+  unique_ptr<Card> toDiscard = p->getCard(card);
+}
+
 void Board::changeLife(int player, int amount) {
   Player *p = getPlayer(player);
-  p->changeLife(-amount);
+  p->changeLife(amount);
 }
+
 void Board::changeAtk(int player, int amount, int slot) {
   unique_ptr<Minion> &minion = getMinion(player, slot);
   minion->changeAtk(amount);
@@ -231,6 +315,8 @@ void Board::returnToDeck(int player, int slot) {
   vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
   unique_ptr<Minion> minion = move(minions.at(slot - 1));
   unique_ptr<Minion> returnedMinion = minion->destroy();
+  vector<bool> &actions = refMinionActs(player);
+  actions.erase(actions.begin() + (slot - 1));
   minions.erase(minions.begin() + (slot - 1));
   Player *p = getPlayer(player);
   p->insertDeckBottom(move(returnedMinion));
@@ -241,7 +327,9 @@ void Board::resurrect(int player) {
   unique_ptr<Minion> rMinion = move(graveyard.back());
   graveyard.pop_back();
   vector<unique_ptr<Minion>> &minions = refPlayerMinions(player);
-  minions.emplace_back(rMinion);
+  minions.emplace_back(move(rMinion));
+  vector<bool> &actions = refMinionActs(player);
+  actions.emplace_back(true);
 }
 
 void Board::destroyEnchantment(int player, int slot) {
@@ -256,13 +344,13 @@ void Board::changeMagic(int player, int amount) {
   p->changeMagic(amount);
 }
 
-void Board::specialSummon(int i, std::string name, int count) {
+void Board::specialSummon(int player, std::string name, int count) {
 
 }
 
 void Board::changeCharge(int player, int amount) {
-  Ritual *ritual = (player == 1) ? ritual1.get() : ritual2.get();
-  ritual->changeCharge(amount);
+//  Ritual *ritual = (player == 1) ? ritual1.get() : ritual2.get();
+//  ritual->changeCharge(amount);
 }
 
 Board::~Board() {

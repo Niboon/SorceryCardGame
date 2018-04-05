@@ -7,7 +7,7 @@
 
 using namespace std;
 
-bool processLineOfCmd(const string &line, Controller &game) {// processes commands by single lines
+bool processLineOfCmd(const std::string &line, Controller &game, bool testing) {// processes commands by single lines
   stringstream ss(line);
   string cmd;
   ss >> std::ws;
@@ -38,9 +38,17 @@ bool processLineOfCmd(const string &line, Controller &game) {// processes comman
     if (ss >> minion) {
       game.drawInspect(minion);
     }
-  } else if (cmd == "hand") {
+  } else if (cmd == "discard" && testing) {
+    int card;
+    if (ss >> card) {
+      game.drawInspect(card);
+    }
+    game.discard(card);
+  } else if (cmd == "draw" && testing) {
+    game.drawCard();
+  }  else if (cmd == "hand") {
     game.drawHand();
-  } else if (cmd == "board") {
+  }else if (cmd == "board") {
     game.drawBoard();
   } else if (cmd == "end") {
     game.nextTurn();

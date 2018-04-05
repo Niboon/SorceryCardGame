@@ -15,7 +15,7 @@ public:
 
   int getDef() const override;
 
-  int getAbility() const override;
+  Ability * getAbility() const override;
 
   std::unique_ptr<Minion> destroy() override;
 

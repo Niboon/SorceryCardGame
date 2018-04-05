@@ -6,13 +6,14 @@
 #include <memory>
 #include <vector>
 #include "card.h"
+#include "ability.h"
 
 class Deck {
 private:
   std::vector<std::unique_ptr<Card>> cards;
 
 public:
-  Deck(std::vector<std::string> cardNames, std::vector<std::string> loader);
+  Deck(std::vector<std::string> cardNames, std::vector<std::string> loader, bool testing);
 
   void shuffleDeck(int nonce=1);
 
@@ -29,5 +30,7 @@ void insertPair(std::map<std::string, std::string> &params, const std::string &k
 
 void loadCard(const std::string &name, std::map<std::string, std::string> &cardParams,
               std::vector<std::unique_ptr<Card>> &deckCards);
+
+std::unique_ptr<Ability> loadAbility(std::map<std::string, std::string> &cardParams);
 
 #endif

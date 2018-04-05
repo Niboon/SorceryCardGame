@@ -13,6 +13,8 @@ class Hand {
 public:
   std::unique_ptr<Card> takeCard(int which);
 
+  int getCardCost(int which);
+
   bool addCard(std::unique_ptr<Card> newCard);
 
   int getSize() const;

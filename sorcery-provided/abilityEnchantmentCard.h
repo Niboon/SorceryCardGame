@@ -6,7 +6,7 @@
 
 class AbilityEnchantmentCard : public EnchantmentCard {
 public:
-  AbilityEnchantmentCard(const std::string &name, int cost, int ability);
+  AbilityEnchantmentCard(const std::string &name, int cost, std::unique_ptr<Ability> ability);
 
   std::string getName() const override;
 
@@ -16,7 +16,7 @@ public:
 
   int getDef() const override;
 
-  int getAbility() const override;
+  Ability * getAbility() const override;
 
   card_template_t getDraw() const override;
 
@@ -25,7 +25,7 @@ public:
 private:
   std::string name;
   int cost;
-  int ability;
+  std::unique_ptr<Ability> ability;
 };
 
 

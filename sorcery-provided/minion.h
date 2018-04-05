@@ -4,6 +4,7 @@
 #include <string>
 #include "card.h"
 #include "phase.h"
+#include "ability.h"
 
 class Minion : public Card {
 public:
@@ -15,7 +16,7 @@ public:
 
   virtual int getDef() const = 0;
 
-  virtual int getAbility() const = 0;
+  virtual Ability * getAbility() const = 0;
 
   virtual std::string getOrgName() const = 0;
 
@@ -25,7 +26,7 @@ public:
 
   virtual int getOrgDef() const = 0;
 
-  virtual int getOrgAbility() const = 0;
+  virtual Ability & getOrgAbility() const = 0;
 
   virtual void changeAtk(int amount) = 0;
 

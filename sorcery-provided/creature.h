@@ -4,10 +4,11 @@
 #include <string>
 #include <memory>
 #include "minion.h"
+#include "ability.h"
 
 class Creature : public Minion {
 public:
-  Creature(const std::string &name, int cost, int atk, int def, int ability);
+  Creature(const std::string &name, int cost, int atk, int def, std::unique_ptr<Ability> ability);
 
   std::string getName() const override;
 
@@ -17,7 +18,7 @@ public:
 
   int getDef() const override;
 
-  int getAbility() const override;
+  Ability * getAbility() const override;
 
   virtual std::string getOrgName() const;
 
@@ -27,7 +28,7 @@ public:
 
   virtual int getOrgDef() const override;
 
-  virtual int getOrgAbility() const override;
+  virtual Ability & getOrgAbility() const override;
 
   void changeAtk(int amount) override;
 
@@ -44,17 +45,17 @@ public:
   ~Creature() override = default;
 
 private:
-  std::string name;
-  int cost;
-  int atk;
-  int def;
-  int ability;
-
   const std::string orgName;
   const int orgCost;
   const int orgAtk;
   const int orgDef;
-  const int orgAbility;
+  std::unique_ptr<Ability> orgAbility;
+
+  std::string name;
+  int cost;
+  int atk;
+  int def;
+  Ability *ability;
 };
 
 

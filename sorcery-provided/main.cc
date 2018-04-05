@@ -1,11 +1,17 @@
 #include <iostream>
 #include <vector>
 #include "interpret.h"
+#include "deck.h"
+#include "hand.h"
+#include "creature.h"
 
 using namespace std;
 
+
 int main(int argc, char *argv[]) {
   cin.exceptions(ios::eofbit | ios::failbit);
+
+  bool testing = false;
 
   string deckFile1 = "default.deck";
   string deckFile2 = "default.deck";
@@ -30,6 +36,7 @@ int main(int argc, char *argv[]) {
       // Enable discard and draw inputs
       // Disable Magic Requirement
       // Disable deck shuffle
+      testing = true;
     } else {
       cerr << argument << " Ignored: Invalid Argument" << endl;
     }
@@ -62,11 +69,11 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  Controller game{deck1, deck2, player1Name, player2Name, cardLoader};
+  Controller game{deck1, deck2, player1Name, player2Name, cardLoader, testing};
 
   if (!init.empty()) {
     for (auto it = init.begin() + 2; it != init.end(); ++it) {
-      processLineOfCmd(*it, game);
+      processLineOfCmd(*it, game, testing);
     }
   }
 
@@ -75,7 +82,7 @@ int main(int argc, char *argv[]) {
   try {
     while (true) {
       getline(cin, line);
-      if (!processLineOfCmd(line, game)) break;
+      if (!processLineOfCmd(line, game, testing)) break;
     }
   }
   catch (ios::failure &e) {

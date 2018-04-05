@@ -16,7 +16,7 @@ public:
 
   int getDef() const override;
 
-  int getAbility() const override;
+  Ability * getAbility() const override;
 
   card_template_t getDraw() const override;
 

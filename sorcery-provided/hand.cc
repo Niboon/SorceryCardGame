@@ -8,6 +8,10 @@ unique_ptr<Card> Hand::takeCard(int which) {
   return move(ret);
 }
 
+int Hand::getCardCost(int which) {
+  return (cards.at(which-1)->getCost());
+}
+
 bool Hand::addCard(unique_ptr<Card> newCard) {
   if (getSize() < HAND_CARD_LIMIT && newCard) {
     cards.emplace_back(move(newCard));

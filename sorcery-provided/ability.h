@@ -3,22 +3,16 @@
 
 #include <string>
 #include <memory>
+#include <functional>
 
 class Board;
 
 class Ability {
-  struct AbilityType{
-    virtual activate(Board *board) = 0;
-    virtual ~AbilityType() = default;
-  }
-  std::unique_ptr<AbilityType> type;
-  std::string description;
-  int cost;
-  public:
-  std::string getDesc();
-  int getCost();
-  void applyEffect(Board* board);
-  Ability(std::string abilityText);
+public:
+  virtual void applyEffect(Board* board, int player, int slot) = 0;
+  virtual void applyEffect(Board* board) = 0;
+  virtual std::string getDescription() const = 0;
+  virtual int getCost() const = 0;
   virtual ~Ability() = default;
 };
 

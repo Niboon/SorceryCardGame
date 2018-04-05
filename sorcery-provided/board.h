@@ -5,29 +5,32 @@
 #include <memory>
 #include <string>
 #include "subject.h"
-#include "ritual.h"
 #include "minion.h"
 #include "enchantment.h"
 #include "statsEnchantmentCard.h"
 #include "abilityEnchantmentCard.h"
 #include "player.h"
 #include "creature.h"
+//#include "ritual.h"
 
 class Board : public Subject {
 private:
   std::unique_ptr<Player> p1, p2;
   int activePlayer;
   std::vector<std::unique_ptr<Minion>> graveyard1, graveyard2;
-  std::unique_ptr<Ritual> ritual1, ritual2;
+//  std::unique_ptr<Ritual> ritual1, ritual2;
   std::vector<std::unique_ptr<Minion>> minions1, minions2;
+  std::vector<bool> minionsAct1, minionsAct2;
   std::vector<TriggerObserver *> observersPlayer1, observersPlayer2;
 
   std::vector<std::unique_ptr<Minion>> &refPlayerMinions(int player);
 
+  std::vector<bool> &refMinionActs(int player);
+
   Player *getPlayer(int player);
 public:
-  Board(std::vector<std::string> deck1, std::vector<std::string> deck2,
-        std::string name1, std::string name2, std::vector<std::string> loader);
+  Board(std::vector<std::string> deck1, std::vector<std::string> deck2, std::string name1, std::string name2,
+          std::vector<std::string> loader, bool testing);
 
   void attach(int player, TriggerObserver *observer) override;
 
@@ -63,6 +66,10 @@ public:
 
   void endTurn();
 
+  void startTurn();
+
+  void discard(int player, int card);
+
   card_template_t showHand(int player);
 
   card_template_t getDraw();
@@ -73,17 +80,21 @@ public:
 
   bool hasMinion(int player, int slot);
 
+  bool hasAction(int player, int slot);
+
+  void setAction(int player, int slot, bool val);
+
   void returnToDeck(int player, int slot);
 
   void destroyEnchantment(int player, int slot);
 
-  void changeDef(int player);
+  void changeDef(int amount);
 
   void changeDef(int player, int amount);
 
   void changeDef(int player, int amount, int slot);
 
-  void changeAtk(int player);
+  void changeAtk(int amount);
 
   void changeAtk(int player, int amount);
 
@@ -91,11 +102,13 @@ public:
 
   void changeMagic(int player, int amount);
 
-  void specialSummon(int i, std::string name, int count);
+  void specialSummon(int player, std::string name, int count);
 
   void changeCharge(int player, int amount);
 
   void resurrect(int player);
+
+  bool tryUseCost(int player, int cost);
 };
 
 std::unique_ptr <Enchantment> doEnchant(std::unique_ptr<Minion> minion,

@@ -52,8 +52,8 @@ int StatsEnchantment::getDef() const {
   return Enchantment::getDef() + enchantmentCard->getDef();
 }
 
-int StatsEnchantment::getAbility() const {
-  return 0;
+Ability *StatsEnchantment::getAbility() const {
+  return nullptr;
 }
 
 unique_ptr<Minion> StatsEnchantment::destroy() {

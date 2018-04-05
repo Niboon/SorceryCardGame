@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include "card.h"
+#include "ability.h"
 
 class EnchantmentCard : public Card {
 public:
@@ -17,7 +18,7 @@ public:
 
   virtual int getDef() const = 0;
 
-  virtual int getAbility() const = 0;
+  virtual Ability * getAbility() const = 0;
 
   ~EnchantmentCard() override = default;
 };

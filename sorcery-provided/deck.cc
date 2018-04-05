@@ -10,10 +10,12 @@
 //#include "ritual.h"
 //#include "spell.h"
 #include "board.h"
+#include "activeAbility.h"
+#include "triggerAbility.h"
 
 using namespace std;
 
-Deck::Deck(vector<string> cardNames, vector<string> loader) {
+Deck::Deck(vector<string> cardNames, vector<string> loader, bool testing) {
   for (const auto &cardName : cardNames) {
     for (const auto &line : loader) {
       stringstream ss(line);
@@ -31,8 +33,7 @@ Deck::Deck(vector<string> cardNames, vector<string> loader) {
       loadCard(name, cardParams, cards);
     }
   }
-
-//  shuffleDeck();
+  if (!testing)  shuffleDeck();
 }
 
 // Shuffles deck of cards
@@ -65,6 +66,10 @@ void Deck::pushCard(unique_ptr<Card> newCard) {
   shuffleDeck();
 }
 
+void Deck::insertToBottom(unique_ptr<Card> newCard) {
+  cards.insert(cards.begin(),move(newCard));
+}
+
 void loadCard(const string &name, map<string, string> &cardParams, vector<unique_ptr<Card>> &deckCards) {
   basic_string<char> &type = cardParams.at("type");
   if (type == "Minion") {
@@ -74,27 +79,29 @@ void loadCard(const string &name, map<string, string> &cardParams, vector<unique
                     stoi(cardParams["cost"]),
                     stoi(cardParams["atk"]),
                     stoi(cardParams["def"]),
-                    0
+                    nullptr
             )
     );
   } else if (type == "TriggerMinion") {
+    unique_ptr<Ability> ability = loadAbility(cardParams);
     deckCards.emplace_back(
             make_unique<Creature>(
                     name,
                     stoi(cardParams["cost"]),
                     stoi(cardParams["atk"]),
                     stoi(cardParams["def"]),
-                    0
+                    move(ability)
             )
     );
   } else if (type == "AbilityMinion") {
+    unique_ptr<Ability> ability = loadAbility(cardParams);
     deckCards.emplace_back(
             make_unique<Creature>(
                     name,
                     stoi(cardParams["cost"]),
                     stoi(cardParams["atk"]),
                     stoi(cardParams["def"]),
-                    0
+                    move(ability)
             )
     );
   } else if (type == "Spell") {
@@ -121,117 +128,162 @@ void loadCard(const string &name, map<string, string> &cardParams, vector<unique
             make_unique<AbilityEnchantmentCard>(
                     name,
                     stoi(cardParams["cost"]),
-                    ability
+                    move(ability)
             )
     );
   } else if (type == "TriggerEnchantment") {
     unique_ptr<Ability> ability = loadAbility(cardParams);
-    deckCards.emplace_back(
-            make_unique<AbilityEnchantmentCard>(
-                    name,
-                    stoi(cardParams["cost"]),
-                    ability
-            )
-    );
+//    deckCards.emplace_back(
+//            make_unique<AbilityEnchantmentCard>(
+//                    name,
+//                    stoi(cardParams["cost"]),
+//                    move(ability)
+//            )
+//    );
   } else if (type == "Ritual") {
     unique_ptr<Ability> ability = loadAbility(cardParams);
-    deckCards.emplace_back(
-            make_unique<Ritual>(
-                    name,
-                    stoi(cardParams["cost"]),
-                    ability,
-                    stoi(cardParams["charges"])
-            )
-    );
+//    deckCards.emplace_back(
+//            make_unique<Ritual>(
+//                    name,
+//                    stoi(cardParams["cost"]),
+//                    move(ability),
+//                    stoi(cardParams["charges"])
+//            )
+//    );
   }
 }
 
 unique_ptr<Ability> loadAbility(map<string, string> &cardParams) {
-  void (*effectPtr)(Board *b, int tP, int tS) = [](Board *b, int tP, int tS){ return;};
+  function<void (Board *b, int tP, int tS)> effectFunc = [](Board *b, int tP, int tS){ return;};
   basic_string<char> &target = cardParams.at("target");
   if (target == "Given") {
     if (cardParams.count("effect")) { // Effects without an additional value
       if (cardParams.at("effect") == "destroy") {
-        effectPtr = [](Board *b, int tP, int tS) { b->destroy(tP, tS); };
+        effectFunc = [](Board *b, int tP, int tS) { b->destroy(tP, tS); };
       } else if (cardParams.at("effect") == "return") {
-        effectPtr = [](Board *b, int tP, int tS) { b->returnToDeck(tP, tS);};
+        effectFunc = [](Board *b, int tP, int tS) { b->returnToDeck(tP, tS);};
       } else if (cardParams.at("effect") == "destroyEnchantment") {
-        effectPtr = [](Board *b, int tP, int tS) { b->destroyEnchantment(tP, tS);};
+        effectFunc = [](Board *b, int tP, int tS) { b->destroyEnchantment(tP, tS);};
       }
     } else if (cardParams.count("changeAtk")) {
+      int amountAtk = stoi(cardParams.at("changeAtk"));
       if (cardParams.count("changeDef")) {
-        effectPtr = [](Board *b, int tP, int tS) {
-            b->changeAtk(tP, stoi(cardParams.at("changeAtk")), tS);
-            b->changeDef(tP, stoi(cardParams.at("changeDef")), tS);
+        int amountDef = stoi(cardParams.at("changeDef"));
+        effectFunc = [amountAtk,amountDef](Board *b, int tP, int tS) {
+            b->changeAtk(tP, amountAtk, tS);
+            b->changeDef(tP, amountDef, tS);
         };
       } else {
-        effectPtr = [](Board *b, int tP, int tS) {
-            b->changeAtk(tP, stoi(cardParams.at("changeAtk")), tS);
+        effectFunc = [amountAtk](Board *b, int tP, int tS) {
+            b->changeAtk(tP, amountAtk, tS);
         };
       }
     } else if (cardParams.count("changeDef")) {
-      effectPtr = [](Board *b, int tP, int tS) {
-          b->changeDef(tP, stoi(cardParams.at("changeDef")), tS);
+      int amount = stoi(cardParams.at("changeDef"));
+      effectFunc = [amount](Board *b, int tP, int tS) {
+          b->changeDef(tP, amount, tS);
       };
     } else if (cardParams.count("changeMagic")) {
-      effectPtr = [](Board *b, int tP, int tS) {
-          b->changeMagic(tP, stoi(cardParams.at("changeMagic")));
+      int amount = stoi(cardParams.at("changeMagic"));
+      effectFunc = [amount](Board *b, int tP, int tS) {
+          b->changeMagic(tP, amount);
       };
     }
   } else if (target == "Self") {
     if (cardParams.count("summon")) {
-      effectPtr = [](Board *b, int tP, int tS) {
-          string what = cardParams.at("summon");
-          int count = stoi(what.substr(0,1));
-          string name = what.substr(2);
-          replace(name.begin(), name.end(), '_', ' '); // Replace _ with space so it matches the deck naming
+      string what = cardParams.at("summon");
+      int count = stoi(what.substr(0,1));
+      string name = what.substr(2);
+      replace(name.begin(), name.end(), '_', ' '); // Replace _ with space so it matches the deck naming
+      effectFunc = [count,name](Board *b, int tP, int tS) {
           b->specialSummon(b->whoseTurn(), name, count);
       };
     } else if (cardParams.count("changeCharge")) {
-      effectPtr = [](Board *b, int tP, int tS) {
-          b->changeCharge(b->whoseTurn(), stoi(cardParams.at("changeCharge")));
+      int amount = stoi(cardParams.at("changeCharge"));
+      effectFunc = [amount](Board *b, int tP, int tS) {
+          b->changeCharge(b->whoseTurn(), amount);
       };
     } else if (cardParams.count("resurrect")) {
-      effectPtr = [](Board *b, int tP, int tS) { b->resurrect(b->whoseTurn()); };
+      effectFunc = [](Board *b, int tP, int tS) { b->resurrect(b->whoseTurn()); };
     }
   } else if (target == "SelfAll") {
     if (cardParams.count("changeAtk")) {
+      int amountAtk = stoi(cardParams.at("changeAtk"));
       if (cardParams.count("changeDef")) {
-        effectPtr = [](Board *b, int tP, int tS) {
-            b->changeAtk(tP, stoi(cardParams.at("changeAtk")));
-            b->changeDef(tP, stoi(cardParams.at("changeDef")));
+        int amountDef = stoi(cardParams.at("changeDef"));
+        effectFunc = [amountAtk,amountDef](Board *b, int tP, int tS) {
+            b->changeAtk(tP, amountAtk);
+            b->changeDef(tP, amountDef);
         };
       } else {
-        effectPtr = [](Board *b, int tP, int tS) {
-            b->changeAtk(tP, stoi(cardParams.at("changeAtk")));
+        effectFunc = [amountAtk](Board *b, int tP, int tS) {
+            b->changeAtk(tP, amountAtk);
         };
       }
     } else if (cardParams.count("changeDef")) {
-      effectPtr = [](Board *b, int tP, int tS) {
-          b->changeDef(tP, stoi(cardParams.at("changeDef")));
+      int amount = stoi(cardParams.at("changeDef"));
+      effectFunc = [amount](Board *b, int tP, int tS) {
+          b->changeDef(tP, amount);
       };
     }
   } else if (target == "All") {
-    if (cardParams.count("changeAtk")) {
-      if (cardParams.count("changeDef")) {
-        effectPtr = [](Board *b, int tP, int tS) {
-            b->changeAtk(stoi(cardParams.at("changeAtk")));
-            b->changeDef(stoi(cardParams.at("changeDef")));
+    int amountAtk = stoi(cardParams.at("changeAtk"));
+    if (cardParams.count("changeDef")) {
+      int amountDef = stoi(cardParams.at("changeDef"));
+        effectFunc = [amountAtk,amountDef](Board *b, int tP, int tS) {
+            b->changeAtk(amountAtk);
+            b->changeDef(amountDef);
         };
       } else {
-        effectPtr = [](Board *b, int tP, int tS) {
-            b->changeAtk(stoi(cardParams.at("changeAtk")));
+        effectFunc = [amountAtk](Board *b, int tP, int tS) {
+            b->changeAtk(amountAtk);
         };
       }
     } else if (cardParams.count("changeDef")) {
-      effectPtr = [](Board *b, int tP, int tS) {
-          b->changeDef(stoi(cardParams.at("changeDef")));
+      int amount = stoi(cardParams.at("changeDef"));
+      effectFunc = [amount](Board *b, int tP, int tS) {
+          b->changeDef(amount);
       };
     }
-  }
 
-  unique_ptr<Ability> ability{cardParams["desc"], effectPtr};
-  return move(ability);
+
+  if (cardParams.count("phase")) {
+    bool onMyTurn = true;
+    bool onOppTurn = false;
+    Phase onPhase = Phase::Start;
+    if (cardParams.at("phase") == "MyStart") {
+      onMyTurn = true;
+      onOppTurn = false;
+      onPhase = Phase::Start;
+    } else if (cardParams.at("phase") == "MySummon") {
+      onMyTurn = false;
+      onOppTurn = false;
+      onPhase = Phase::Summon;
+    } else if (cardParams.at("phase") == "Summon") {
+      onMyTurn = true;
+      onOppTurn = true;
+      onPhase = Phase::Summon;
+    } else if (cardParams.at("phase") == "OppSummon") {
+      onMyTurn = false;
+      onOppTurn = true;
+      onPhase = Phase::Summon;
+    } else if (cardParams.at("phase") == "MyEnd") {
+      onMyTurn = true;
+      onOppTurn = false;
+      onPhase = Phase::End;
+    }
+    unique_ptr<TriggerAbility> ability = make_unique<TriggerAbility>(
+            cardParams["desc"],
+            effectFunc,
+            onMyTurn,
+            onOppTurn,
+            onPhase
+    );
+    return move(ability);
+  } else {
+    unique_ptr<ActiveAbility> ability = make_unique<ActiveAbility>(cardParams["desc"], effectFunc);
+    return move(ability);
+  }
 }
 
 void insertPair(map<string, string> &params, const string &cmd, stringstream &ss) {

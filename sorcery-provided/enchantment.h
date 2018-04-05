@@ -18,7 +18,7 @@ public:
 
   virtual int getDef() const;
 
-  virtual int getAbility() const;
+  virtual Ability * getAbility() const;
 
   virtual std::string getOrgName() const;
 
@@ -28,7 +28,7 @@ public:
 
   virtual int getOrgDef() const;
 
-  virtual int getOrgAbility() const;
+  virtual Ability & getOrgAbility() const;
 
   virtual void changeAtk(int amount);
 
@@ -51,7 +51,7 @@ private:
   const int orgCost;
   const int orgAtk;
   const int orgDef;
-  const int orgAbility;
+  Ability &orgAbility;
 };
 
 

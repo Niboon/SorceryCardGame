@@ -23,7 +23,7 @@ int AbilityEnchantment::getDef() const {
   return Enchantment::getDef();
 }
 
-int AbilityEnchantment::getAbility() const {
+Ability * AbilityEnchantment::getAbility() const {
   return enchantmentCard->getAbility();
 }
 

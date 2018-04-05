@@ -3,10 +3,12 @@
 using namespace std;
 
 
-Player::Player(const std::string &name, std::vector<std::string> cardNames, std::vector<std::string> loader) :
+Player::Player(const std::string &name, std::vector<std::string> cardNames,
+               std::vector<std::string> loader, bool testing) :
         name{name},
-        deck{move(make_unique<Deck>(cardNames, loader))},
-        hand{move(make_unique<Hand>())}
+        deck{move(make_unique<Deck>(cardNames, loader, testing))},
+        hand{move(make_unique<Hand>())},
+        testing(testing)
 {
   magic = STARTING_MAGIC;
   life = STARTING_LIFE;
@@ -27,12 +29,26 @@ void Player::changeLife(int amount) {
   life += amount;
 }
 
-void Player::changeMagic(int amount) {
-  magic += amount;
+bool Player::changeMagic(int amount) {
+  if (magic + amount < 0 && !testing) {
+    return false;
+  } else if (magic + amount < 0 && testing) {
+    magic = 0;
+    return true;
+  } else {
+    magic += amount;
+    return true;
+  }
 }
 
 std::unique_ptr<Card> Player::getCard(int num) {
   return move(hand->takeCard(num));
+}
+
+bool Player::hasEnoughMagic(int num) {
+  bool b = magic > hand->getCardCost(num);
+  if (testing) b=true;
+  return b;
 }
 
 card_template_t Player::showHand() const{

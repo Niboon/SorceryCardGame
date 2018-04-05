@@ -8,6 +8,6 @@ struct DisableAbility : public Ability::AbilityType{
   int slot;
   void activate(Board *board) override;
   DisableAbility(int player, int slot);
-}
+};
 
 #endif

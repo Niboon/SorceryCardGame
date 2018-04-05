@@ -25,8 +25,8 @@ int StatsEnchantmentCard::getDef() const {
   return def;
 }
 
-int StatsEnchantmentCard::getAbility() const {
-  return 0;
+Ability * StatsEnchantmentCard::getAbility() const {
+  return nullptr;
 }
 
 card_template_t StatsEnchantmentCard::getDraw() const {

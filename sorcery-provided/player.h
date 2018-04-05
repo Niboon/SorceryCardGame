@@ -15,16 +15,19 @@ private:
   std::string name;
   int magic;
   int life;
+  bool testing;
   std::unique_ptr<Deck> deck;
   std::unique_ptr<Hand> hand;
 public:
-  Player(const std::string &name, std::vector<std::string> cardNames, std::vector<std::string> loader);
+  Player(const std::string &name, std::vector<std::string> cardNames, std::vector<std::string> loader, bool testing);
 
   bool drawCard();
 
   void changeLife(int amount);
 
   std::unique_ptr<Card> getCard(int num);
+
+  bool hasEnoughMagic(int num);
 
   card_template_t showHand() const;
 
@@ -34,7 +37,7 @@ public:
 
   void insertDeckBottom(std::unique_ptr<Card> &&card);
 
-  void changeMagic(int amount);
+  bool changeMagic(int amount);
 };
 
 #endif

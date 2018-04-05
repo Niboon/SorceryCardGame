@@ -9,6 +9,6 @@ struct ActCostAbility : public Ability::AbilityType{
   int costMod;
   void activate(Board *board) override;
   ActCostAbility(int player, int slot, int costMod);
-}
+};
 
 #endif

@@ -27,7 +27,7 @@ int Enchantment::getDef() const {
   return minion->getDef();
 }
 
-int Enchantment::getAbility() const {
+Ability * Enchantment::getAbility() const {
   return minion->getAbility();
 }
 
@@ -47,7 +47,7 @@ int Enchantment::getOrgDef() const {
   return orgDef;
 }
 
-int Enchantment::getOrgAbility() const {
+Ability &Enchantment::getOrgAbility() const {
   return orgAbility;
 }
 
